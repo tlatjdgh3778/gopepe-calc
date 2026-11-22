@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3200",
+    "dev": "next dev -p ${DEV_PORT:-3200}",
     "build": "next build",
-    "start": "next start -p 3201",
+    "start": "next start -p ${E2E_PORT:-3201}",
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",

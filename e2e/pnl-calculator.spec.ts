@@ -3,14 +3,26 @@ import { expect, test, type Page } from "@playwright/test";
 /** 음수 부호 U+2212 (스펙 DoD-7·DoD-8) */
 const MINUS = "\u2212";
 
+/** 손익 계산기가 들어 있는 이름 `손익` 탭 패널. 화면 요소는 이 범위에서 찾는다. */
+function pnlPanelOf(page: Page) {
+  return page.getByRole("tabpanel", { name: "손익", exact: true });
+}
+
+/** 결과 카드(region `손익 결과`). 결과 라벨 `손익`은 탭·탭 패널 이름과 겹치므로 이 범위에서 찾는다. */
+function resultCardOf(page: Page) {
+  return pnlPanelOf(page).getByRole("region", { name: "손익 결과", exact: true });
+}
+
 async function chooseSymbol(page: Page, symbol: string) {
-  await page.getByRole("combobox", { name: "심볼", exact: true }).click();
-  await page.getByRole("option", { name: symbol, exact: true }).click();
-  await expect(page.getByRole("combobox", { name: "심볼", exact: true })).toContainText(symbol);
+  const combobox = pnlPanelOf(page).getByRole("combobox", { name: "심볼", exact: true });
+  await combobox.click();
+  // 옵션 목록은 포털로 탭 패널 밖에 그려지므로 열린 listbox 범위에서 찾는다
+  await page.getByRole("listbox").getByRole("option", { name: symbol, exact: true }).click();
+  await expect(combobox).toContainText(symbol);
 }
 
 async function fillTextbox(page: Page, name: string, value: string) {
-  const textbox = page.getByRole("textbox", { name, exact: true });
+  const textbox = pnlPanelOf(page).getByRole("textbox", { name, exact: true });
   await textbox.clear();
   await textbox.fill(value);
   await expect(textbox).toHaveValue(value);
@@ -32,12 +44,12 @@ test.describe("손익 계산 — 포지션을 입력하면 계산 버튼 없이 
       await page.goto("/");
 
       await chooseSymbol(page, "BTCUSDT");
-      await page
+      await pnlPanelOf(page)
         .getByRole("group", { name: "방향", exact: true })
         .getByRole("button", { name: "롱", exact: true })
         .click();
       await fillTextbox(page, "레버리지", "10");
-      await page
+      await pnlPanelOf(page)
         .getByRole("group", { name: "수량 단위", exact: true })
         .getByRole("button", { name: "코인", exact: true })
         .click();
@@ -45,9 +57,13 @@ test.describe("손익 계산 — 포지션을 입력하면 계산 버튼 없이 
       await fillTextbox(page, "종료가", "67250.5");
       await fillTextbox(page, "수량", "0.12");
 
-      await expect(page.getByLabel("필요 증거금", { exact: true })).toHaveText("780.00 USDT");
-      await expect(page.getByLabel("손익", { exact: true })).toHaveText("+270.0600 USDT");
-      await expect(page.getByLabel("ROE", { exact: true })).toHaveText("+34.62%");
+      await expect(resultCardOf(page).getByLabel("필요 증거금", { exact: true })).toHaveText(
+        "780.00 USDT",
+      );
+      await expect(resultCardOf(page).getByLabel("손익", { exact: true })).toHaveText(
+        "+270.0600 USDT",
+      );
+      await expect(resultCardOf(page).getByLabel("ROE", { exact: true })).toHaveText("+34.62%");
     });
   });
 
@@ -67,12 +83,12 @@ test.describe("손익 계산 — 포지션을 입력하면 계산 버튼 없이 
       await page.goto("/");
 
       await chooseSymbol(page, "BTCUSDT");
-      await page
+      await pnlPanelOf(page)
         .getByRole("group", { name: "방향", exact: true })
         .getByRole("button", { name: "숏", exact: true })
         .click();
       await fillTextbox(page, "레버리지", "20");
-      await page
+      await pnlPanelOf(page)
         .getByRole("group", { name: "수량 단위", exact: true })
         .getByRole("button", { name: "코인", exact: true })
         .click();
@@ -80,12 +96,18 @@ test.describe("손익 계산 — 포지션을 입력하면 계산 버튼 없이 
       await fillTextbox(page, "종료가", "99999.9");
       await fillTextbox(page, "수량", "0.042");
 
-      await expect(page.getByLabel("필요 증거금", { exact: true })).toHaveText("207.40 USDT");
+      await expect(resultCardOf(page).getByLabel("필요 증거금", { exact: true })).toHaveText(
+        "207.40 USDT",
+      );
       // 음수 부호는 U+2212로 정확히 비교한다. 하이픈-마이너스(U+002D)면 일치하지 않는다.
-      await expect(page.getByLabel("손익", { exact: true })).toHaveText(`${MINUS}51.8490 USDT`);
-      await expect(page.getByLabel("ROE", { exact: true })).toHaveText(`${MINUS}24.99%`);
-      await expect(page.getByLabel("손익", { exact: true })).not.toContainText("-");
-      await expect(page.getByLabel("ROE", { exact: true })).not.toContainText("-");
+      await expect(resultCardOf(page).getByLabel("손익", { exact: true })).toHaveText(
+        `${MINUS}51.8490 USDT`,
+      );
+      await expect(resultCardOf(page).getByLabel("ROE", { exact: true })).toHaveText(
+        `${MINUS}24.99%`,
+      );
+      await expect(resultCardOf(page).getByLabel("손익", { exact: true })).not.toContainText("-");
+      await expect(resultCardOf(page).getByLabel("ROE", { exact: true })).not.toContainText("-");
     });
   });
 });
@@ -102,11 +124,7 @@ async function boxOf(locator: ReturnType<Page["locator"]>): Promise<Box> {
 }
 
 function inputCardOf(page: Page) {
-  return page.getByRole("region", { name: "입력", exact: true });
-}
-
-function resultCardOf(page: Page) {
-  return page.getByRole("region", { name: "결과", exact: true });
+  return pnlPanelOf(page).getByRole("region", { name: "손익 입력", exact: true });
 }
 
 type Position = {
@@ -120,12 +138,12 @@ type Position = {
 
 async function enterPosition(page: Page, position: Position) {
   await chooseSymbol(page, position.symbol);
-  await page
+  await pnlPanelOf(page)
     .getByRole("group", { name: "방향", exact: true })
     .getByRole("button", { name: position.side, exact: true })
     .click();
   await fillTextbox(page, "레버리지", position.leverage);
-  await page
+  await pnlPanelOf(page)
     .getByRole("group", { name: "수량 단위", exact: true })
     .getByRole("button", { name: "코인", exact: true })
     .click();
@@ -205,10 +223,10 @@ test.describe("손익 계산 화면 — 화면 너비와 OS 색 구성에 맞춰
      * @spec DoD-21
      * @given 너비 표본 768px·1280px마다 그 너비를 지정한 저장 상태 없는 새 브라우저 컨텍스트에서 프로덕션 빌드 앱의 / 화면을 연다
      * @when 첫 화면을 그대로 본다
-     * @then 각 너비에서 제목 `입력` 카드 안에 입력 컨트롤 전부(심볼, 방향, 레버리지, 진입가, 종료가, 수량, 수량 단위)가 있다
-     * @then 각 너비에서 제목 `결과` 카드 안에 필요 증거금·손익·ROE가 있다
+     * @then 각 너비에서 제목 `손익 입력` 카드 안에 입력 컨트롤 전부(심볼, 방향, 레버리지, 진입가, 종료가, 수량, 수량 단위)가 있다
+     * @then 각 너비에서 제목 `손익 결과` 카드 안에 필요 증거금·손익·ROE가 있다
      * @then 각 너비에서 두 카드의 bounding box가 모두 h1의 bounding box 아래에 있다
-     * @then 각 너비에서 bounding box 좌표로 `입력` 카드가 왼쪽, `결과` 카드가 오른쪽에 나란히 놓인다(`입력` 카드 오른쪽 끝이 `결과` 카드 왼쪽 끝을 넘지 않고, 두 카드의 세로 범위가 겹친다)
+     * @then 각 너비에서 bounding box 좌표로 `손익 입력` 카드가 왼쪽, `손익 결과` 카드가 오른쪽에 나란히 놓인다(`손익 입력` 카드 오른쪽 끝이 `손익 결과` 카드 왼쪽 끝을 넘지 않고, 두 카드의 세로 범위가 겹친다)
      */
     test("[DoD-21] 너비 768px·1280px에서 h1 아래에 입력 카드와 결과 카드가 왼쪽·오른쪽으로 나란히 놓인다", async ({
       browser,
@@ -274,10 +292,10 @@ test.describe("손익 계산 화면 — 화면 너비와 OS 색 구성에 맞춰
      * @spec DoD-22
      * @given 너비 표본 375px·767px마다 그 너비를 지정한 저장 상태 없는 새 브라우저 컨텍스트에서 프로덕션 빌드 앱의 / 화면을 연다
      * @when 첫 화면을 본 뒤, EC-7 규모 값(BTCUSDT, 롱, 레버리지 10, 코인, 진입가 65000, 종료가 67250.5, 수량 1000000000)을 입력한다
-     * @then 각 너비의 첫 화면에서 bounding box 좌표로 제목 `결과` 카드가 제목 `입력` 카드 아래에 놓인다(`결과` 카드 위쪽 끝이 `입력` 카드 아래쪽 끝보다 아래다)
+     * @then 각 너비의 첫 화면에서 bounding box 좌표로 제목 `손익 결과` 카드가 제목 `손익 입력` 카드 아래에 놓인다(`손익 결과` 카드 위쪽 끝이 `손익 입력` 카드 아래쪽 끝보다 아래다)
      * @then 각 너비의 첫 화면에서 가로 스크롤이 생기지 않는다(문서의 scrollWidth가 문서의 clientWidth(documentElement.clientWidth)를 넘지 않는다)
      * @then 각 너비에서 큰 값이 표시된 상태에서도 가로 스크롤이 생기지 않는다(문서의 scrollWidth가 문서의 clientWidth(documentElement.clientWidth)를 넘지 않는다)
-     * @then 각 너비에서 큰 값이 표시된 상태에서 `결과` 카드와 그 안 요소의 scrollWidth가 각자의 clientWidth를 넘지 않는다(카드 안 가로 스크롤·잘림이 없다)
+     * @then 각 너비에서 큰 값이 표시된 상태에서 `손익 결과` 카드와 그 안 요소의 scrollWidth가 각자의 clientWidth를 넘지 않는다(카드 안 가로 스크롤·잘림이 없다)
      */
     test("[DoD-22] 너비 375px·767px에서 입력 카드 아래에 결과 카드가 놓이고 큰 값 입력 후에도 가로 스크롤이 없다", async ({
       browser,
@@ -378,8 +396,8 @@ test.describe("손익 계산 화면 — 화면 너비와 OS 색 구성에 맞춰
 
             const tokens = await rootTokenColors(page, ["--background", "--profit", "--loss"]);
             const body = page.locator("body");
-            const pnl = page.getByLabel("손익", { exact: true });
-            const roe = page.getByLabel("ROE", { exact: true });
+            const pnl = resultCardOf(page).getByLabel("손익", { exact: true });
+            const roe = resultCardOf(page).getByLabel("ROE", { exact: true });
 
             // body 배경색 = 그 구성의 :root --background 토큰 색
             await expect(body).toHaveCSS("background-color", tokens["--background"]);
