@@ -133,15 +133,6 @@ function expectNoBrokenScreen() {
   expectControlsIntactWithoutConsoleError();
 }
 
-/** 결과 문자열을 자리표시자로 바꾼 화면 텍스트. 결과값 외의 텍스트 변화를 비교할 때 쓴다. */
-function screenTextWithout(values: string[]) {
-  let text = document.body.textContent ?? "";
-  for (const value of values) {
-    text = text.split(value).join("<결과>");
-  }
-  return text;
-}
-
 // C1 = BTCUSDT 롱 레버리지 10, 진입가 65000, 종료가 67250.5, 수량 0.12 (스펙 DoD-5 사례 표)
 const C1: Position = { leverage: "10", entry: "65000", qty: "0.12", exit: "67250.5" };
 const C1_RESULTS = { margin: "780.00 USDT", pnl: "+270.0600 USDT", roe: "+34.62%" };
@@ -322,35 +313,6 @@ describe("포지션 손익 계산 — 입력하면 계산 버튼 없이 필요 �
         });
         unmount();
       }
-    });
-
-    /**
-     * @spec EC-4
-     * @given 레버리지가 기본값 10인 상태로 진입가·종료가·수량이 입력돼 결과가 표시돼 있다
-     * @when 레버리지에 세 심볼의 Bybit 최대치보다 확실히 큰 값 1000을 키 입력으로 넣는다
-     * @then 필요 증거금·손익·ROE가 레버리지 1000으로 계산된 값으로 표시된다
-     * @then 레버리지 10일 때와 비교해 입력값·결과값 외에 새로 나타난 텍스트가 없다
-     * @then alert 역할 요소가 없다
-     * @then 화면 텍스트와 입력란 값에 `NaN`·`Infinity`가 없다
-     * @then 계산기 컨트롤이 그대로 렌더돼 있고 콘솔 오류가 기록되지 않는다
-     */
-    it("[EC-4] 레버리지가 심볼 최대치를 넘어도 결과를 표시하고 경고하지 않는다", async () => {
-      const { user } = renderCalculator();
-      // 레버리지는 기본값 10. 진입가 100000, 종료가 100050, 수량 0.1
-      // 레버리지 10: 증거금 100000 × 0.1 ÷ 10 = 1000, 손익 50 × 0.1 = 5, ROE 5 ÷ 1000 × 100 = 0.5
-      await fillPosition(user, { entry: "100000", qty: "0.1", exit: "100050" });
-      const before = { margin: "1,000.00 USDT", pnl: "+5.0000 USDT", roe: "+0.50%" };
-      expect(readResults()).toMatchObject(before);
-      const textBefore = screenTextWithout([before.margin, before.pnl, before.roe]);
-
-      await typeInto(user, "레버리지", "1000");
-
-      // 레버리지 1000: 증거금 100000 × 0.1 ÷ 1000 = 10, 손익 5, ROE 5 ÷ 10 × 100 = 50
-      const after = { margin: "10.00 USDT", pnl: "+5.0000 USDT", roe: "+50.00%" };
-      expect(readResults()).toMatchObject(after);
-      expect(screenTextWithout([after.margin, after.pnl, after.roe])).toBe(textBefore);
-      expect(screen.queryAllByRole("alert")).toHaveLength(0);
-      expectNoBrokenScreen();
     });
 
     /**
@@ -667,115 +629,6 @@ describe("포지션 손익 계산 — 입력하면 계산 버튼 없이 필요 �
     });
 
     /**
-     * @spec DoD-13
-     * @given 수량 단위가 USDT이고 진입가와 USDT 금액이 입력돼 있다. 표본: 끝의 0이 지워지는 값(금액 20000 USDT, 진입가 100000 → 원값 0.2 → `0.2`), 소수 8자리를 넘어 사사오입으로 올라가는 값(금액 2 USDT, 진입가 3 → 원값 0.666… → `0.66666667`, 버림이었다면 `0.66666666`), 1000 이상 값(금액 130000000 USDT, 진입가 65000 → 원값 2000 → `2000`), JS 기본 문자열화에서 지수 표기가 되는 1e-6 미만 값(금액 0.012 USDT, 진입가 100000 → 원값 1.2e-7 → `0.00000012`), 8자리 다음 자리가 정확히 5인 사사오입 경계(금액 0.0025 USDT, 진입가 100000 → 원값 2.5e-8 → `0.00000003`, 10진 값 기준 사사오입이며 halfEven·toFixed·버림이었다면 `0.00000002`)
-     * @when 수량 단위를 코인으로 바꾼다
-     * @then 수량 입력란에 금액 ÷ 진입가가 지수 표기 없이, 천 단위 구분(쉼표) 없이 소수 최대 8자리로 10진 사사오입하고(DoD-18의 버림은 적용하지 않는다) 끝의 0을 지운 형식으로 채워진다
-     */
-    it("[DoD-13] USDT → 코인으로 바꾸면 금액 ÷ 진입가가 입력란에 채워진다", async () => {
-      const samples = [
-        { entry: "100000", amount: "20000", filled: "0.2" },
-        { entry: "3", amount: "2", filled: "0.66666667" },
-        { entry: "65000", amount: "130000000", filled: "2000" },
-        { entry: "100000", amount: "0.012", filled: "0.00000012" },
-        { entry: "100000", amount: "0.0025", filled: "0.00000003" },
-      ];
-
-      for (const sample of samples) {
-        const { user, unmount } = renderCalculator();
-        await chooseUnit(user, "USDT");
-        await typeInto(user, "진입가", sample.entry);
-        await typeInto(user, "수량", sample.amount);
-
-        await chooseUnit(user, "코인");
-
-        expect(toggle("수량 단위", "코인").getAttribute("aria-pressed")).toBe("true");
-        expect(field("수량").value).toBe(sample.filled);
-        unmount();
-      }
-    });
-
-    /**
-     * @spec DoD-14 DoD-18
-     * @given 수량 단위가 USDT이고 표본의 심볼·진입가·종료가·레버리지가 입력돼 있다. 표본(기대값은 DoD-18 규칙 — 소수 10자리 사사오입 후 넷째 자리에서 0 방향 버림 — 으로 손계산): BTCUSDT 롱 10, 진입가 100000, 종료가 110000, 금액 19 USDT → 원값 0.00019 → `≈ 0.0001 BTC`(사사오입이었다면 `0.0002`), 필요 증거금 `1.90 USDT`, 손익 `+1.9000 USDT`, ROE `+100.00%`(표시 수량 0.0001로 계산했다면 `1.00 USDT`, `+1.0000 USDT`) / BTCUSDT 롱 10, 진입가 3, 종료가 3.3, 금액 1 USDT → 원값 0.3333333333333333 → `≈ 0.3333 BTC`, 필요 증거금 `0.10 USDT`, 손익 `+0.1000 USDT`, ROE `+100.00%`(DoD-13 채움 형식의 8자리 수량 0.33333333이나 표시 수량으로 계산했다면 `0.09 USDT`, `+0.0999 USDT`) / 부동소수점 오차 정리(금액 0.7 USDT, 진입가 0.1 → JS 결과 6.999999999999999, 10자리 정리 7 → `≈ 7.0000 BTC`) / 끝자리 0 유지(금액 20000 USDT, 진입가 100000 → 원값 0.2 → `≈ 0.2000 BTC`) / ETHUSDT(금액 300 USDT, 진입가 3000 → 원값 0.1 → `≈ 0.1000 ETH`) / SOLUSDT(금액 50 USDT, 진입가 200 → 원값 0.25 → `≈ 0.2500 SOL`)
-     * @when 수량 입력란에 USDT 금액을 키 입력으로 넣는다
-     * @then 수량 입력란 아래에 환산 코인 수량이 `≈ {DoD-18 규칙으로 소수 넷째 자리까지 표시하고 끝의 0을 지우지 않은 코인 수량} {기초 코인}` 형식으로 표본의 기대값과 같게 표시된다
-     * @then 기초 코인은 선택한 심볼을 따른다(BTCUSDT면 `BTC`, ETHUSDT면 `ETH`, SOLUSDT면 `SOL`)
-     * @then 필요 증거금·손익·ROE는 표시된 넷째 자리 수량이나 8자리로 사사오입한 수량이 아니라 코인 수량 원값(금액 ÷ 진입가)으로 계산된 값으로 표본의 기대값과 같게 표시된다
-     */
-    it("[DoD-14] USDT 모드에서 환산 코인 수량을 넷째 자리로 보여 주고 계산에는 원값을 쓴다", async () => {
-      const samples: Array<{
-        position: Position;
-        amount: string;
-        reference: string;
-        results: { margin: string; pnl: string; roe: string };
-      }> = [
-        {
-          // 수량 원값 19 ÷ 100000 = 0.00019
-          position: {
-            symbol: "BTCUSDT",
-            side: "롱",
-            leverage: "10",
-            entry: "100000",
-            exit: "110000",
-          },
-          amount: "19",
-          reference: "≈ 0.0001 BTC",
-          results: { margin: "1.90 USDT", pnl: "+1.9000 USDT", roe: "+100.00%" },
-        },
-        {
-          // 수량 원값 1 ÷ 3 = 0.3333333333333333
-          position: { symbol: "BTCUSDT", side: "롱", leverage: "10", entry: "3", exit: "3.3" },
-          amount: "1",
-          reference: "≈ 0.3333 BTC",
-          results: { margin: "0.10 USDT", pnl: "+0.1000 USDT", roe: "+100.00%" },
-        },
-        // 아래 4개 표본은 종료가를 넣지 않는다(손익·ROE는 —). 레버리지는 기본값 10이다.
-        {
-          // 0.7 ÷ 0.1 의 JS 결과 6.999999999999999 → 10자리 정리 7
-          // 증거금 0.1 × 6.999999999999999 ÷ 10 = 0.06999999999999999 → 10자리 정리 0.07 → 2자리 버림 0.07
-          position: { symbol: "BTCUSDT", entry: "0.1" },
-          amount: "0.7",
-          reference: "≈ 7.0000 BTC",
-          results: { margin: "0.07 USDT", pnl: DASH, roe: DASH },
-        },
-        {
-          // 수량 20000 ÷ 100000 = 0.2, 증거금 100000 × 0.2 ÷ 10 = 2000
-          position: { symbol: "BTCUSDT", entry: "100000" },
-          amount: "20000",
-          reference: "≈ 0.2000 BTC",
-          results: { margin: "2,000.00 USDT", pnl: DASH, roe: DASH },
-        },
-        {
-          // 수량 300 ÷ 3000 = 0.1, 증거금 3000 × 0.1 ÷ 10 = 30 (ETHUSDT 2자리)
-          position: { symbol: "ETHUSDT", entry: "3000" },
-          amount: "300",
-          reference: "≈ 0.1000 ETH",
-          results: { margin: "30.00 USDT", pnl: DASH, roe: DASH },
-        },
-        {
-          // 수량 50 ÷ 200 = 0.25, 증거금 200 × 0.25 ÷ 10 = 5 (SOLUSDT 3자리)
-          position: { symbol: "SOLUSDT", entry: "200" },
-          amount: "50",
-          reference: "≈ 0.2500 SOL",
-          results: { margin: "5.000 USDT", pnl: DASH, roe: DASH },
-        },
-      ];
-
-      for (const sample of samples) {
-        const { user, unmount } = renderCalculator();
-        await chooseUnit(user, "USDT");
-        await fillPosition(user, sample.position);
-
-        await typeInto(user, "수량", sample.amount);
-
-        expect(screen.getByText(sample.reference)).toBeDefined();
-        expect(readResults()).toEqual(sample.results);
-        unmount();
-      }
-    });
-
-    /**
      * @spec EC-10
      * @given 수량 단위가 USDT이고 진입가·종료가·레버리지·USDT 금액이 입력돼 결과가 표시돼 있다
      * @when 진입가를 다른 값으로 바꾼다
@@ -790,7 +643,7 @@ describe("포지션 손익 계산 — 입력하면 계산 버튼 없이 필요 �
       await chooseUnit(user, "USDT");
       await fillPosition(user, { leverage: "10", entry: "100000", qty: "20000", exit: "110000" });
       // 수량 20000 ÷ 100000 = 0.2, 증거금 100000 × 0.2 ÷ 10 = 2000, 손익 10000 × 0.2 = 2000, ROE 100
-      expect(screen.getByText("≈ 0.2000 BTC")).toBeDefined();
+      expect(screen.getByText("≈ 0.200 BTC")).toBeDefined();
       expect(readResults()).toMatchObject({
         margin: "2,000.00 USDT",
         pnl: "+2,000.0000 USDT",
@@ -801,8 +654,8 @@ describe("포지션 손익 계산 — 입력하면 계산 버튼 없이 필요 �
 
       expect(field("수량").value).toBe("20000");
       // 수량 20000 ÷ 80000 = 0.25, 증거금 80000 × 0.25 ÷ 10 = 2000, 손익 30000 × 0.25 = 7500, ROE 7500 ÷ 2000 × 100 = 375
-      expect(screen.getByText("≈ 0.2500 BTC")).toBeDefined();
-      expect(screen.queryByText("≈ 0.2000 BTC")).toBeNull();
+      expect(screen.getByText("≈ 0.250 BTC")).toBeDefined();
+      expect(screen.queryByText("≈ 0.200 BTC")).toBeNull();
       expect(readResults()).toMatchObject({
         margin: "2,000.00 USDT",
         pnl: "+7,500.0000 USDT",

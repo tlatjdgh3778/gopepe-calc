@@ -1,12 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const port = process.env.E2E_PORT || "3201";
+const baseURL = `http://localhost:${port}`;
+
 export default defineConfig({
   testDir: "./e2e",
   testMatch: "*.spec.ts",
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   use: {
-    baseURL: "http://localhost:3201",
+    baseURL,
     trace: "on-first-retry",
   },
   projects: [
@@ -17,7 +20,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "bun run build && bun run start",
-    url: "http://localhost:3201",
+    url: baseURL,
     reuseExistingServer: false,
     timeout: 300_000,
   },
