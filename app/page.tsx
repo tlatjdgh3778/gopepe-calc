@@ -1,6 +1,6 @@
 import { CalculatorTabs } from "@/components/calculator-tabs";
 import { PnlCalculator } from "@/components/pnl-calculator";
-// F-2 자리
+import { TargetPriceCalculator } from "@/components/target-price-calculator"; // F-2
 // ---
 import { LiquidationCalculator } from "@/components/liquidation-calculator"; // F-3
 // ---
@@ -10,7 +10,7 @@ import { LiquidationCalculator } from "@/components/liquidation-calculator"; // 
 
 const items = [
   { value: "pnl", label: "손익", content: <PnlCalculator /> },
-  // F-2 자리
+  { value: "target", label: "목표가", content: <TargetPriceCalculator /> }, // F-2
   // ---
   { value: "liquidation", label: "청산가", content: <LiquidationCalculator /> }, // F-3
   // ---
