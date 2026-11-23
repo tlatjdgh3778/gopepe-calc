@@ -49,7 +49,7 @@
   - `lib/input.ts`: `toNumber`, `isPositive`, `LEVERAGE_PATTERN`, `DECIMAL_PATTERN`, `filtered(pattern, set)`
   - `lib/symbols.ts`: `SYMBOLS`, `SYMBOLS_AS_OF`, `SymbolInfo`
   - `lib/format.ts`: `roundToStep`, `formatPrice`, `formatCoinQty` 등 표시 형식
-  - `components/fields/`: `SymbolSelect`, `SideToggle`, `LeverageField`, `DecimalField`, `FieldWarning`
+  - `components/fields/`: `SymbolSelect`, `SideToggle`, `LeverageField`, `DecimalField`, `SignedDecimalField`(맨 앞 `-` 하나를 허용하는 숫자 입력란, F-2), `FieldWarning`
   - `components/calculator-layout.tsx`: 입력·결과 2단 카드 `CalculatorLayout`, `ResultRow`
   - `components/calculator-tabs.tsx`: `CalculatorTabs`
   - `cn`은 `@/lib/utils`에서 가져온다.
