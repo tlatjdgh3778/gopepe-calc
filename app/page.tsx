@@ -2,7 +2,7 @@ import { CalculatorTabs } from "@/components/calculator-tabs";
 import { PnlCalculator } from "@/components/pnl-calculator";
 // F-2 자리
 // ---
-// F-3 자리
+import { LiquidationCalculator } from "@/components/liquidation-calculator"; // F-3
 // ---
 // F-4 자리
 // ---
@@ -12,7 +12,7 @@ const items = [
   { value: "pnl", label: "손익", content: <PnlCalculator /> },
   // F-2 자리
   // ---
-  // F-3 자리
+  { value: "liquidation", label: "청산가", content: <LiquidationCalculator /> }, // F-3
   // ---
   // F-4 자리
   // ---
