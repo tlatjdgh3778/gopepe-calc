@@ -29,15 +29,6 @@
 - Playwright `webServer`가 `bun run build && bun run start`로 `E2E_PORT`에 앱을 띄운다.
 - E2E는 이미 떠 있는 서버를 재사용하지 않는다(`reuseExistingServer: false`). `E2E_PORT`의 포트가 사용 중이면 실패한다.
 
-## 병렬 개발(worktree)
-
-- 위치: `.claude/worktrees/{F-ID}`. 이 아래 파일은 git 추적 대상이 아니고, 저장소 루트의 `lint`·`format:check`·`typecheck` 대상이 아니다.
-- 규칙:
-  1. worktree는 `.claude/worktrees/{F-ID}`에 만들고, 만든 직후 그 안에서 `bun install`을 실행한다.
-  2. 동시에 E2E·dev를 돌리는 worktree마다 서로 다른 `E2E_PORT`·`DEV_PORT`를 지정한다.
-  3. 같은 worktree 안에서 `bun run build`와 `bun run test:e2e`를 동시에 돌리지 않는다(`.next`·포트를 공유한다).
-  4. 작업이 끝나면 `git worktree remove`로 정리한다.
-
 ## 새 계산기 추가
 
 - 새 lib·컴포넌트·테스트 파일을 만들고, `app/page.tsx`는 자기 F-ID 자리 두 곳(import 1곳, `CalculatorTabs` 탭 항목 1곳)만 바꾼다.
