@@ -4,7 +4,7 @@ import { TargetPriceCalculator } from "@/components/target-price-calculator"; //
 // ---
 import { LiquidationCalculator } from "@/components/liquidation-calculator"; // F-3
 // ---
-// F-4 자리
+import { MaxQuantityCalculator } from "@/components/max-quantity-calculator"; // F-4
 // ---
 // F-5 자리
 
@@ -14,7 +14,7 @@ const items = [
   // ---
   { value: "liquidation", label: "청산가", content: <LiquidationCalculator /> }, // F-3
   // ---
-  // F-4 자리
+  { value: "max-quantity", label: "최대 수량", content: <MaxQuantityCalculator /> }, // F-4
   // ---
   // F-5 자리
 ];
