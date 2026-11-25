@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>피라미딩 계산기 · 거래 터미널</title><style>
+:root{--bg:#f6f7f9;--ink:#1c2828;--muted:#88918f;--line:#e9edeb;--green:#148269;--mint:#eaf6f0;--orange:#c78235;--red:#d1645e}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px 'DM Sans','Noto Sans KR','Malgun Gothic',sans-serif}button,input{font:inherit}button,a,input,summary{ -webkit-tap-highlight-color:transparent}button{cursor:pointer}button{border:0;background:transparent;color:inherit}button:hover{filter:brightness(.94)}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:3px}.sidebar{width:216px;position:fixed;inset:0 auto 0 0;background:#fff;border-right:1px solid var(--line);padding:31px 18px 0;display:flex;flex-direction:column;z-index:5}.brand{font-size:32px;letter-spacing:-1.8px;font-weight:700;display:flex;align-items:center;gap:9px;padding-left:10px}.brandmark{color:var(--green);font-size:38px;transform:rotate(-22deg);display:inline-block}.brand-dot{color:var(--green);margin-left:-9px}.workspace{display:flex;align-items:center;gap:9px;margin:32px 0 32px;padding:13px 8px;border:1px solid var(--line);border-radius:8px;font-size:10px;font-weight:600}.workspace>span:last-child{margin-left:auto}.workspace small,.profile small{display:block;color:var(--muted);font-size:9px;margin-top:4px;font-weight:400}.workspace-icon{display:grid;place-items:center;width:27px;height:28px;background:#edf1ef;border-radius:5px;font-size:13px}.nav-label{font-size:9px;color:#98a09d;letter-spacing:1.5px;padding-left:14px;margin-bottom:12px;font-weight:600}.nav-item{display:flex;align-items:center;gap:11px;height:43px;padding:0 13px;border-radius:6px;margin-bottom:5px;font-weight:500}.nav-item>span:first-child{font-size:18px}.nav-item.muted{color:#8b9391}.nav-item small{font-size:8px;color:#b0b6b3;margin-left:auto}.tools-label{margin-top:30px}.selected{background:var(--mint);color:var(--green);font-weight:700;font-size:11px}.selected i{margin-left:auto;width:5px;height:5px;border-radius:50%;background:var(--green)}.sidebar-bottom{margin-top:auto;padding:35px 14px 25px}.version{display:block;letter-spacing:1px;font-size:9px;color:var(--green);margin-bottom:13px}.sidebar-bottom strong{font-size:12px}.sidebar-bottom p{font-size:11px;line-height:1.9;color:#939b98}.education{display:block;font-size:9px;color:#7d8783;margin-top:20px}.profile{border-top:1px solid var(--line);display:flex;align-items:center;gap:9px;padding:18px 0;font-size:10px}.avatar{width:30px;height:30px;border-radius:50%;background:#eee9df;color:#8d7c5e;display:grid;place-items:center}.profile>span:last-child{margin-left:auto;color:#929996}.shell{margin-left:216px}.topbar{height:68px;background:#fff;border-bottom:1px solid var(--line);padding:0 36px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#8a9390}.topbar b{font-weight:500;color:#46504d}.topbar div>span{margin:0 14px;color:#c2c8c5}.prototype{font-size:8px;letter-spacing:1.2px;display:flex;align-items:center;gap:8px}.prototype i{width:5px;height:5px;background:#5f9e86;border-radius:50%}.prototype>span{padding:3px 6px;border:1px solid var(--line);border-radius:3px;letter-spacing:0}main{max-width:1510px;margin:auto;padding:34px 36px 0}.page-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:27px}.eyebrow{color:var(--green);font-size:9px;font-weight:700;letter-spacing:1.9px;margin-bottom:9px}h1{font-size:28px;letter-spacing:-1.2px;margin:0 0 9px;font-weight:700}.page-heading p{color:#84908a;font-size:11px;margin:0}.heading-actions{display:flex;gap:8px}.button{border:1px solid #dfe5e1;background:#fff;border-radius:6px;padding:10px 14px;font-size:11px;display:flex;gap:7px;align-items:center}.button.dark{background:#203e34;color:#fff;border-color:#203e34}.market-strip{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:13px 17px;margin-bottom:18px;font-size:10px;color:#8c9690}.eth-icon{background:#edf0f6;color:#7986aa;border-radius:50%;width:30px;height:30px;display:grid;place-items:center;font-size:24px}.market-strip strong{font-size:15px;color:var(--ink);font-weight:700}.market-strip strong span{font-weight:400;color:#929a96}.tag{font-size:9px;padding:4px 7px;border:1px solid var(--line);border-radius:4px;background:#f8f9f8;color:#79867e}.market-divider{height:19px;width:1px;background:var(--line);margin:0 5px}.sample-dot{width:5px;height:5px;background:var(--green);border-radius:50%}.market-note{margin-left:8px}.text-button{margin-left:auto;font-size:10px;color:#73857c}.calculator-grid{display:grid;grid-template-columns:310px minmax(0,1fr);gap:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px}h2{font-size:13px;font-weight:700;margin:0;letter-spacing:-.3px}.section-number{color:#9eaaa3;font:10px 'DM Sans',sans-serif;letter-spacing:.3px;margin-right:9px}.live-label{color:#8c9791;font-size:9px}.live-label:before{content:'';display:inline-block;width:4px;height:4px;background:#41a47d;border-radius:50%;margin-right:5px}.segmented{display:flex;background:#f2f5f3;padding:4px;border-radius:7px;margin-bottom:21px;gap:4px}.segmented button{flex:1;padding:8px 3px;font-size:11px;border-radius:5px;color:#869189}.segmented button.active{background:white;color:var(--green);box-shadow:0 1px 4px #15251b12;font-weight:700}.segmented button.short-active{color:var(--red)}.field{display:block;font-size:10px;color:#7c8981;margin-bottom:16px}.input-wrap{display:flex;align-items:center;height:41px;background:#fcfdfc;border:1px solid #dfe5e1;border-radius:5px;padding:0 12px;margin-top:8px;color:#97a19a;transition:border-color .2s}.input-wrap:focus-within{border-color:var(--green);box-shadow:0 0 0 2px #1482690b}.input-wrap input{width:100%;min-width:0;background:transparent;border:0;outline:none;font:600 14px 'DM Sans',sans-serif;color:#2f3b34;appearance:textfield}.input-wrap input::-webkit-inner-spin-button{appearance:none}.input-wrap>span{font-size:10px}.leverage-heading{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#7c8981;margin-top:20px}.leverage-heading strong{font:600 18px 'DM Sans',sans-serif;color:var(--green)}.leverage-heading small{font-size:13px}.range{width:100%;height:4px;accent-color:var(--green);margin:17px 0 9px;cursor:pointer}.range-labels{display:flex;justify-content:space-between;color:#9aa49e;font-size:9px}.initial-exposure{display:flex;justify-content:space-between;background:#f6f8f7;padding:11px;border-radius:4px;font-size:9px;margin:17px 0;color:#8a948e}.initial-exposure strong{font-size:10px;color:#526159;font-weight:500}.advanced{margin-top:19px;font-size:9px;color:#8e9891}.advanced summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between}.advanced summary span{color:#a1a9a4}.two-fields{display:flex;gap:8px;margin-top:14px}.two-fields label{width:50%}.section-divider{height:1px;background:var(--line);margin:24px -22px 21px}.step-heading{margin-bottom:9px}.optional{color:#9ea8a1;font-size:9px;letter-spacing:.4px}.help{font-size:9px;color:#97a098;margin:7px 0 17px;line-height:1.6}.step-card{padding:13px;background:#f8faf9;border:1px solid #e6ece8;border-radius:6px;margin-bottom:10px}.step-card header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:10px;font-weight:600}.step-card header span{color:var(--green);background:#e7f1eb;padding:3px 5px;font:10px 'DM Sans',sans-serif;margin-right:6px;border-radius:3px}.remove{font-size:15px;color:#a1aaa4;padding:0 3px}.step-fields{display:flex;gap:10px}.step-fields .field{margin-bottom:0;flex:1;min-width:0;font-size:9px}.step-fields .field:first-child{flex:1.35}.step-fields .input-wrap{background:white;margin-top:6px;height:35px;padding:0 9px}.step-fields input{font-size:12px}.step-fields .input-wrap>span{font-size:8px}.add-step{width:100%;padding:10px;border:1px dashed #cddbd2;border-radius:5px;font-size:10px;color:#718d7c;margin-top:3px}.small-note{font-size:8px;text-align:center;color:#a2aba5;margin-top:11px}.results{display:flex;flex-direction:column;gap:18px;min-width:0}.green{background:#edf7f1;color:var(--green);border-color:#dceee2;font-weight:600;font-size:9px}.metric-grid{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:25px;margin-bottom:25px}.metric{padding:0 20px;border-right:1px solid var(--line)}.metric:first-child{padding-left:0}.metric:last-child{border:0}.metric>span{font-size:10px;color:#7a8980;display:block}.metric>span small{font-size:8px;margin-left:4px;color:#b0b7b2}.metric>strong{font:500 29px 'DM Sans',sans-serif;letter-spacing:-1px;display:block;margin:10px 0 6px}.metric em{font-style:normal;color:#97a199;font-size:8px}.risk-metric strong{color:var(--green)}.risk-metric em{color:#ab874d}.detail-metrics{display:grid;grid-template-columns:1fr 1fr;gap:13px 25px;padding:20px 0;border-top:1px solid var(--line)}.detail-metrics>div{display:flex;justify-content:space-between;font-size:9px;gap:10px}.detail-metrics span{color:#8a968d}.detail-metrics strong{font-weight:500;font-size:10px}.warning{background:#fcf8ed;border:1px solid #f1ead4;border-radius:5px;padding:12px;display:flex;align-items:flex-start;gap:10px;color:#ac8743;font-size:10px}.warning>span{font-size:18px;line-height:19px}.warning p{margin:0;line-height:1.8}.warning strong{font-weight:500}.warning p span{font-size:9px;color:#ae9972}#errors{font-size:10px;line-height:1.8;color:var(--red)}#errors:not(:empty){padding:10px 0 0}.journey{flex:1;padding-bottom:10px}.journey .panel-title{margin-bottom:0}.journey .help{margin-bottom:0}.legend{display:flex;gap:12px;align-items:center;font-size:8px;color:#98a198}.legend span{white-space:nowrap}.dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:5px;vertical-align:middle}.green-dot{background:var(--green)}.gray-dot{background:#9aaba0}.orange-dot{background:#d4a061}.chart{height:184px;margin:13px -4px 8px}.chart svg{width:100%;height:100%;overflow:visible}.chart text{font:9px 'DM Sans','Noto Sans KR','Malgun Gothic',sans-serif;fill:#a3ada6}.chart .price-label{fill:var(--green);font-size:10px;font-weight:600}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:9px;text-align:right}th{color:#9aa59d;font-weight:400;padding:11px 8px;background:#f8faf9;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}td{padding:13px 8px;border-bottom:1px solid #f0f3f1;color:#65766a;font-family:'DM Sans','Noto Sans KR','Malgun Gothic',sans-serif}th:first-child,td:first-child{text-align:left}td:first-child{color:#40594b;font-weight:500}td:nth-child(7){color:#273f31;font-weight:600}td:last-child{color:#b88c55}tbody tr:last-child td{border-bottom:0}.stage-pill{display:inline-block;background:#eaf4ee;color:#3e8c6a;padding:2px 4px;font-size:8px;border-radius:3px;margin-right:5px}.outcome-section{margin-top:25px}.outcome-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.outcome-heading>div{display:flex;align-items:center}.outcome-heading>span{font-size:9px;color:#96a096}.outcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#38966c;margin-right:6px}.status-dot.red{background:#d38477}.linked-fields{display:flex;align-items:center;gap:13px}.linked-fields label{flex:1;min-width:0;margin-bottom:0}.link-icon{color:#9da9a0;padding-top:20px}.profit-total{display:flex;align-items:baseline;gap:15px;padding:23px 0 20px}.profit-total>span{font-size:10px;color:#8d998f}.profit-total strong{color:var(--green);font:500 26px 'DM Sans',sans-serif;letter-spacing:-.8px}.profit-total small{font-size:11px;color:var(--green);margin-left:auto}.comparison{border-top:1px solid var(--line);padding-top:16px}.comparison>div:not(.bar-track):not(.comparison-caption){display:flex;justify-content:space-between;font-size:9px;color:#8c988e;margin-bottom:8px}.comparison b{font-weight:500;color:#5c6e60}.bar-track{height:5px;border-radius:4px;background:#f3f6f3;margin-bottom:13px;overflow:hidden}.base-bar{background:#c9d6cd;height:100%;border-radius:4px}.pyramid-bar{background:#4a9978;height:100%;border-radius:4px}.comparison-caption{font-size:9px;text-align:right;color:var(--green);margin-top:4px}.stoploss>.field{margin-bottom:0}.stop-metrics{display:grid;grid-template-columns:1.2fr 1fr;padding:22px 0;gap:15px}.stop-metrics>div{display:flex;flex-direction:column}.stop-metrics span{font-size:10px;color:#8d998f}.stop-metrics strong{font:500 24px 'DM Sans',sans-serif;margin:7px 0 3px;letter-spacing:-.6px}.stop-metrics small{font-size:9px;color:#9ba69d}.liquidation-distance{border-top:1px solid var(--line);padding-top:17px}.liquidation-distance>div:first-child{display:flex;justify-content:space-between;font-size:9px;color:#8d998f}.liquidation-distance strong{font-weight:500;color:#b08952}.distance-track{height:6px;background:linear-gradient(to right,#dbece0,#f1dfc1);margin:17px 0 9px;position:relative;border-radius:6px}.distance-track>div{height:6px;border-radius:6px;background:#608e73;opacity:.25}.distance-track i{position:absolute;top:-3px;height:12px;width:3px;background:#bc8b4a;border-radius:3px}.distance-labels{display:flex;justify-content:space-between;font-size:8px;color:#9da69f}.stop-note{font-size:9px;color:#9a8a70;padding-top:14px}.stop-note.danger{color:var(--red);font-weight:600}footer{display:flex;justify-content:space-between;gap:15px;color:#a0aaa2;font-size:8px;padding:22px 0 26px;line-height:1.7}#toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);background:#244b3b;color:#fff;padding:13px 23px;border-radius:7px;font-size:12px;opacity:0;transition:.2s;pointer-events:none;z-index:30}#toast.visible{opacity:1;transform:translate(-50%,0)}dialog{max-width:520px;width:calc(100% - 32px);padding:25px;border:1px solid var(--line);border-radius:12px;color:var(--ink);box-shadow:0 20px 80px #13281a33}dialog::backdrop{background:#14231b66;backdrop-filter:blur(3px)}dialog p{font-size:12px;line-height:1.9;color:#758276}.negative{color:var(--red)!important}.positive{color:var(--green)!important}
+@media(max-width:650px){.profit-total{display:grid;grid-template-columns:1fr auto;gap:9px}.profit-total>span{grid-column:1/-1}.profit-total strong{font-size:24px!important;white-space:nowrap}.profit-total small{font-size:9px}}
+@media(min-width:1550px){main{padding-top:42px}.calculator-grid{grid-template-columns:330px minmax(0,1fr)}.chart{height:213px}.panel{padding:25px}.section-divider{margin-left:-25px;margin-right:-25px}.metric>strong{font-size:34px}.detail-metrics{gap:17px 35px}.sidebar{width:235px}.shell{margin-left:235px}}
+@media(max-width:1180px){.sidebar{width:180px;padding-left:12px;padding-right:12px}.shell{margin-left:180px}main{padding:25px 22px 0}.topbar{padding:0 22px}.calculator-grid{grid-template-columns:270px minmax(0,1fr);gap:14px}.panel{padding:18px}.section-divider{margin-left:-18px;margin-right:-18px}.market-note{display:none}.metric{padding:0 12px}.metric>strong{font-size:24px}.metric>span{font-size:9px}.detail-metrics{grid-template-columns:1fr;gap:10px}.chart{height:175px}.legend{gap:7px;font-size:7px}.profit-total{gap:9px}.profit-total strong{font-size:23px}.workspace{font-size:8px}.workspace small{font-size:8px}.nav-item{font-size:10px;padding:0 9px}.sidebar-bottom{padding-left:9px}.stop-metrics strong{font-size:21px}}
+@media(max-width:900px){.sidebar{display:none}.shell{margin-left:0}.calculator-grid{grid-template-columns:280px minmax(0,1fr)}.prototype{font-size:7px}.legend{display:none}h1{font-size:25px}.page-heading p{font-size:10px}.heading-actions .button{font-size:10px;padding:9px}.outcome-heading>span{font-size:8px}}
+@media(max-width:650px){.topbar{height:51px;padding:0 18px;font-size:9px}.prototype{font-size:6px;letter-spacing:.5px}.prototype>span{display:none}main{padding:23px 16px 0}.page-heading{display:block;margin-bottom:20px}.eyebrow{font-size:8px}h1{font-size:26px}.page-heading p{font-size:10px;line-height:1.8}.heading-actions{margin-top:16px}.button{padding:9px 12px!important}.market-strip{padding:11px 12px;gap:7px;flex-wrap:wrap}.market-strip strong{font-size:13px}.market-strip>span:not(.eth-icon):not(.tag):not(.sample-dot):not(.market-divider){font-size:8px}.market-divider{margin:0}.text-button{font-size:9px}.calculator-grid{display:flex;flex-direction:column;gap:16px}.panel{padding:20px}.section-divider{margin-left:-20px;margin-right:-20px}.setup .field{margin-bottom:15px}.results{gap:16px}.metric-grid{margin-top:24px;margin-bottom:22px}.metric{padding:0 10px}.metric>strong{font-size:23px}.metric>span{font-size:8px}.metric>span small{display:none}.metric em{font-size:7px}.detail-metrics{grid-template-columns:1fr;gap:13px;padding:20px 0}.detail-metrics>div,.detail-metrics strong{font-size:10px}.warning{font-size:10px}.warning p span{font-size:9px}.chart{height:195px;margin-left:-10px;margin-right:-10px}.journey{padding:20px 14px 7px}.journey .panel-title{padding:0 6px}.outcome-heading{align-items:flex-start}.outcome-heading>span{display:none}.outcome-grid{grid-template-columns:1fr;gap:16px}.outcome-section{margin-top:25px}.profit-total strong{font-size:26px}.stop-metrics strong{font-size:24px}footer{flex-direction:column;gap:4px;padding:22px 3px}.table-scroll{margin:0 -14px;padding:0 14px}th,td{padding-left:10px;padding-right:10px}.optional{font-size:8px}}
+
+[hidden] { display: none !important; }
+.layout-picker {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 26px;
+  padding: 6px; width: fit-content; max-width: 100%; border: 1px solid var(--line);
+  border-radius: 9px; background: var(--surface, #fff);
+}
+.layout-picker button, .guide-steps button, .report-tabs button {
+  padding: 9px 12px; border-radius: 5px; font-size: 12px; font-weight: 600;
+}
+.layout-picker button[aria-pressed=true], .guide-steps button[aria-current], .report-tabs button[aria-pressed=true] {
+  background: var(--accent, #203e34); color: var(--on-accent, #fff);
+}
+body:not([data-layout=original]) .sidebar,
+body:not([data-layout=original]) .eyebrow,
+body:not([data-layout=original]) .section-number { display: none; }
+body:not([data-layout=original]) .shell { margin-left: 0; }
+body:not([data-layout=original]) .page-heading h1 { font-size: clamp(25px, 3.5vw, 46px); }
+body:not([data-layout=original]) .page-heading p { font-size: 13px; }
+body:not([data-layout=original]) .panel h2 { font-size: 15px; }
+body:not([data-layout=original]) .topbar,
+body:not([data-layout=original]) .market-strip,
+body:not([data-layout=original]) .panel { background: var(--surface, #fff); }
+body:not([data-layout=original]) .button.dark { background: var(--accent, #203e34); color: var(--on-accent, #fff); border-color: transparent; }
+.layout-host [data-slot] { min-width: 0; }
+.layout-host .profit-total { flex-wrap: wrap; }
+.layout-host .profit-total strong, .layout-host .stop-metrics strong { white-space: normal; overflow-wrap: anywhere; }
+.layout-host .detail-metrics strong { text-align: right; }
+.layout-host .metric em { display: block; line-height: 1.5; }
+.layout-host .pyramid-panel .step-heading { margin-bottom: 12px; }
+
+/* Terminal: persistent order ticket, market analysis, paired exits. */
+[data-layout=terminal] {
+  --bg: #10151b; --surface: #171f29; --line: #2c3846; --ink: #e4edf7;
+  --green: #6be8c5; --accent: #82e9ce; --on-accent: #10221e;
+  font-family: 'DM Sans', 'Noto Sans KR', sans-serif;
+}
+.desk { display: grid; grid-template-columns: minmax(235px, .85fr) minmax(0, 2fr) minmax(245px, 1fr); gap: 12px; align-items: start; }
+.desk-center, .desk-exits { display: grid; gap: 12px; }
+[data-layout=terminal] .panel { border-radius: 6px; padding: 17px; }
+[data-layout=terminal] .section-divider { margin-inline: -17px; }
+[data-layout=terminal] .desk .metric>strong { font-family: Consolas, monospace; font-size: clamp(20px, 2vw, 32px); }
+[data-layout=terminal] :is(.input-wrap,.step-card,.initial-exposure,.segmented,.tag,.bar-track,th) { background: #101720; border-color: #344254; }
+[data-layout=terminal] :is(.button:not(.dark),.segmented button.active) { background: #263443; border-color: #394b5e; }
+[data-layout=terminal] :is(.input-wrap input,.initial-exposure strong,td,td:first-child,td:nth-child(7),.comparison b,.topbar b) { color: #d1dfed; }
+[data-layout=terminal] :is(.field,.help,.metric>span,.metric em,.detail-metrics span,.page-heading p,.optional) { color: #a4b2c2; }
+[data-layout=terminal] .warning { background: #2c261e; border-color: #554432; color: #e7be80; }
+[data-layout=terminal] .warning p span { color: #d3ba93; }
+[data-layout=terminal] .chart line { stroke: #344254; }
+[data-layout=terminal] .chart .price-label { fill: #82e9ce; }
+[data-layout=terminal] .negative { color: #ff9b94 !important; }
+
+/* Guide: one task per screen, with a live summary alongside. */
+[data-layout=guide] { --bg: #f0f3ff; --surface: #fff; --line: #dce1f8; --ink: #222454; --accent: #4644a4; --green: #43418d; }
+[data-layout=guide] main { max-width: 1180px; }
+.guide-steps { display: flex; gap: 8px; margin-bottom: 16px; }
+.guide-steps button { flex: 1; background: #e4e8fb; min-height: 46px; }
+.guide-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(270px, 1fr); gap: 18px; align-items: start; }
+.guide-work { min-width: 0; }
+.guide-grid .panel { border-radius: 17px; }
+.guide-grid .overview .metric-grid { grid-template-columns: 1fr; gap: 12px; }
+.guide-grid .overview .metric { padding: 0 0 10px; border: 0; border-bottom: 1px solid var(--line); }
+.guide-grid .detail-metrics { grid-template-columns: 1fr; }
+.guide-controls { display: flex; justify-content: space-between; margin-top: 14px; padding-bottom: 6px; }
+.guide-controls button:disabled { opacity: .4; cursor: default; }
+.guide-exits { display: grid; gap: 14px; margin-top: 14px; }
+.guide-exits .panel { padding: 20px; }
+
+/* Timeline: editing follows the chronological order of a trade. */
+[data-layout=timeline] { --bg: #f6f6ed; --surface: #fffef8; --line: #e5e4d5; --ink: #2e3827; --accent: #4d632f; --green: #50712e; }
+[data-layout=timeline] main { max-width: 1330px; }
+.timeline-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 25px; align-items: start; }
+.timeline-stack { border-left: 2px solid #bcc8a8; margin-left: 8px; padding-left: 22px; }
+.timeline-stack > article { position: relative; margin-bottom: 22px; }
+.timeline-stack > article::before { content: ''; position: absolute; top: 3px; left: -29px; width: 10px; height: 10px; border: 2px solid var(--bg); border-radius: 50%; background: var(--accent); }
+.timeline-stack > article > h2 { font-size: 15px; margin-bottom: 10px; }
+.timeline-stack :is(.setup,.pyramid-panel)>.panel-title { display: none; }
+.timeline-stack .step-fields .input-wrap { height: 40px; }
+.timeline-results, .timeline-exits { display: grid; gap: 14px; }
+.timeline-results { position: sticky; top: 16px; }
+
+/* Risk: exposure and stop distance sit above the scenario editor. */
+[data-layout=risk] { --bg: #f8f3f1; --surface: #fffdfb; --line: #ebdcd5; --ink: #372523; --accent: #9a4237; }
+.risk-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; align-items: stretch; }
+.risk-settings { grid-column: 1 / -1; }
+.risk-grid .risk-metric { background: #f8e8e2; border-radius: 8px; padding-block: 10px; }
+.risk-grid .risk-metric strong { color: #933d32; }
+.risk-grid .stoploss { border-top: 4px solid #b46c60; height: 100%; }
+.risk-grid .distance-track { height: 10px; background: linear-gradient(to right, #d9e9e0, #f4cbc1); }
+.risk-grid #distance-fill { height: 10px; }
+.risk-grid #stop-warning.danger { padding: 10px; margin-top: 12px; background: #fae8e4; border-radius: 5px; }
+
+/* Report: large comparative result, with technical detail on demand. */
+[data-layout=report] { --bg: #f6efe3; --surface: #fffaf0; --line: #e7d8be; --ink: #292c2e; --accent: #263950; --green: #275b54; }
+[data-layout=report] h1 { font-family: Georgia, 'Noto Sans KR', serif; }
+[data-layout=report] main { max-width: 1160px; }
+.report-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.report-grid .takeprofit { border-top: 4px solid #263950; }
+.report-grid .takeprofit .profit-total { background: #e8eee9; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.report-grid .profit-total strong { font-size: clamp(24px, 3vw, 38px); letter-spacing: -1px; }
+.report-grid .bar-track { height: 14px; background: #ece5d9; }
+.report-grid .comparison>div:not(.bar-track) { font-size: 12px; }
+.report-settings, .report-analysis { grid-column: 1 / -1; }
+.report-tabs { display: flex; gap: 6px; margin-bottom: 9px; }
+.report-tabs button { border: 1px solid var(--line); }
+.report-settings summary, .risk-settings summary { cursor: pointer; font-weight: 700; }
+.report-settings .setup, .risk-settings .setup { margin-top: 12px; }
+
+@media (max-width: 1150px) {
+  .desk { grid-template-columns: minmax(235px, .8fr) minmax(0, 1.7fr); }
+  .desk-exits { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .desk, .desk-exits, .guide-grid, .timeline-grid, .risk-grid, .report-grid { grid-template-columns: minmax(0, 1fr); }
+  .timeline-results { position: static; }
+  .layout-picker { width: 100%; }
+  .layout-picker button { flex-grow: 1; padding: 7px; font-size: 11px; }
+  .guide-steps button { font-size: 10px; padding-inline: 4px; }
+  .layout-host .metric>strong { font-size: clamp(15px, 5vw, 23px); overflow-wrap: anywhere; }
+  .layout-host .profit-total strong { font-size: 21px !important; }
+  .timeline-stack { margin-left: 4px; padding-left: 15px; }
+  .timeline-stack > article::before { left: -22px; }
+}
+
+</style></head>
+<body>
+<aside class="sidebar"><a class="brand" href="#"><span class="brandmark">▰</span> forma<span class="brand-dot">.</span></a><div class="workspace"><span class="workspace-icon">F</span><div>Personal workspace<small>트레이딩 워크스페이스</small></div><span>⌄</span></div><div class="nav-label">WORKSPACE</div><div class="nav-item muted">▦ <span>대시보드</span><small>예정</small></div><div class="nav-item muted">⇄ <span>Swap</span><small>예정</small></div><div class="nav-item muted">◴ <span>포트폴리오</span><small>예정</small></div><div class="nav-label tools-label">TOOLS</div><a class="nav-item selected" href="#"><span>▧</span> 피라미딩 계산기 <i></i></a><div class="sidebar-bottom"><span class="version">LAB / 01</span><strong>더하기 전에, 확인하세요.</strong><p>포지션이 커질수록<br>리스크도 함께 커집니다.</p><span class="education">◉ 교육용 시뮬레이터</span></div><div class="profile"><span class="avatar">Y</span><div>Your workspace<small>로컬 시뮬레이션</small></div><span>⌘</span></div></aside>
+<div class="shell"><header class="topbar"><div>트레이딩 도구 <span>/</span> <b>피라미딩 계산기</b></div><span class="prototype"><i></i> INTERACTIVE WIREFRAME <span>v.01</span></span></header>
+<main><section class="page-heading"><div><div class="eyebrow">POSITION SIMULATOR</div><h1>수익을 더하면, 리스크는?</h1><p>추가 진입부터 익절까지. 포지션의 다음 단계를 미리 확인하세요.</p></div><div class="heading-actions"><button id="reset" class="button">↻ <span>초기화</span></button><button id="save" class="button dark">↗ <span>시나리오 저장</span></button></div></section>
+<div class="market-strip"><span class="eth-icon">♦</span><strong>ETH <span>/ USDT</span></strong><span class="tag">무기한</span><span class="market-divider"></span><span class="sample-dot"></span><span>예제 시나리오</span><span class="market-note">USDT 선형 계약 · 미실현 수익 재투입 가정</span><button id="method" class="text-button">계산 기준 ⓘ</button></div>
+<div class="calculator-grid"><section class="panel setup"><div class="panel-title"><h2><span class="section-number">01</span> 포지션 설정</h2><span class="live-label">자동 계산</span></div><div class="segmented" aria-label="포지션 방향"><button id="long" class="active">↗ 롱 / Long</button><button id="short">↘ 숏 / Short</button></div><label class="field">최초 진입가<div class="input-wrap"><input id="entry" type="number" min="1" value="1900"><span>USDT</span></div></label><label class="field">초기 증거금<div class="input-wrap"><input id="margin" type="number" min="1" value="1000"><span>USDT</span></div></label><div class="leverage-heading"><label for="leverage">레버리지</label><strong><span id="leverage-label">5</span><small> ×</small></strong></div><input id="leverage" class="range" type="range" min="1" max="20" value="5"><div class="range-labels"><span>1×</span><span>5×</span><span>10×</span><span>15×</span><span>20×</span></div><div class="initial-exposure"><span>최초 포지션 가치</span><strong id="initial-notional"></strong></div><details class="advanced"><summary>수수료 및 유지증거금 <span>설정 ⌄</span></summary><div class="two-fields"><label class="field">거래 수수료율<div class="input-wrap"><input id="fee" type="number" min="0" max="0.99" step="0.01" value="0.05"><span>%</span></div></label><label class="field">유지증거금률<div class="input-wrap"><input id="maintenance" type="number" min="0" max="19" step="0.1" value="0.5"><span>%</span></div></label></div></details><div class="section-divider"></div><div class="panel-title step-heading"><h2><span class="section-number">02</span> 추가 진입</h2><span class="optional">선택</span></div><p class="help">해당 시점의 가용 수익을 증거금으로 사용합니다.</p><div id="steps"></div><button id="add-step" class="add-step">＋ 추가 진입 단계</button><div class="small-note">추가 진입에도 최초 레버리지가 적용됩니다.</div></section>
+<div class="results"><section class="panel overview"><div class="panel-title"><h2>포지션 한눈에 보기</h2><span class="tag green" id="position-badge">LONG · 5×</span></div><div class="metric-grid"><div class="metric"><span>평균 진입가 <small>USDT</small></span><strong id="average"></strong><em id="average-change"></em></div><div class="metric"><span>추정 청산가 <small>USDT</small></span><strong id="liquidation"></strong><em>수수료·유지증거금 반영</em></div><div class="metric risk-metric"><span>원금 대비 실효 레버리지 ⓘ</span><strong id="effective"></strong><em id="effective-change"></em></div></div><div class="detail-metrics"><div><span>총 포지션 수량</span><strong id="quantity"></strong></div><div><span>최종 진입 시 포지션 가치</span><strong id="notional"></strong></div><div><span>실제 투입 원금</span><strong id="capital"></strong></div><div><span>미실현 수익 포함 총 자산</span><strong id="equity"></strong></div><div><span>수수료 포함 본전가</span><strong id="breakeven"></strong></div><div><span>누적 진입 수수료</span><strong id="fees"></strong></div></div><div id="risk-warning" class="warning"><span>△</span><p><strong>수익으로 키운 포지션도, 내 원금의 리스크입니다.</strong><br><span id="risk-description"></span></p></div><div id="errors" role="alert"></div></section>
+<section class="panel journey"><div class="panel-title"><div><h2>포지션이 커지는 경로</h2><p class="help">추가 진입할수록 평단과 청산가도 함께 이동합니다.</p></div><div class="legend"><span><i class="dot green-dot"></i>진입가</span><span><i class="dot gray-dot"></i>누적 평단</span><span><i class="dot orange-dot"></i>청산가</span></div></div><div id="chart" class="chart"></div><div class="table-scroll"><table><thead><tr><th>진입 단계</th><th>진입가</th><th>재투입</th><th>시점 수익</th><th>투입 증거금</th><th>추가 수량</th><th>누적 평단</th><th>청산가</th></tr></thead><tbody id="stage-table"></tbody></table></div></section>
+</div></div>
+<section class="outcome-section"><div class="outcome-heading"><div><span class="section-number">03</span><h2>어디에서 마무리할까요?</h2></div><span>모든 손익은 진입·청산 수수료를 차감한 추정값입니다.</span></div><div class="outcome-grid"><section class="panel takeprofit"><div class="panel-title"><h2><span class="status-dot"></span> 익절 시뮬레이션</h2><span class="optional">TAKE PROFIT</span></div><div class="linked-fields"><label class="field">익절가<div class="input-wrap"><input id="tp" type="number" value="2500" min="1"><span>USDT</span></div></label><span class="link-icon">⇄</span><label class="field">목표 수익률<div class="input-wrap"><input id="roe" type="number" step="1"><span>%</span></div></label></div><div class="profit-total"><span>예상 순수익</span><strong id="tp-profit"></strong><small id="tp-roe"></small></div><div class="comparison"><div><span>추가 진입 없이</span><b id="baseline"></b></div><div class="bar-track"><div id="base-bar" class="base-bar"></div></div><div><span><i class="dot green-dot"></i>피라미딩 적용</span><b id="pyramid-profit"></b></div><div class="bar-track"><div id="pyramid-bar" class="pyramid-bar"></div></div><div class="comparison-caption" id="comparison-caption"></div></div></section><section class="panel stoploss"><div class="panel-title"><h2><span class="status-dot red"></span> 손절 & 리스크</h2><span class="optional">STOP LOSS</span></div><label class="field">손절가<div class="input-wrap"><input id="sl" type="number" value="2000" min="1"><span>USDT</span></div></label><div class="stop-metrics"><div><span>손절 시 예상 손익</span><strong id="sl-profit"></strong><small id="sl-roe"></small></div><div><span>손익비</span><strong id="reward-risk"></strong><small>손절 위험 대비 기대 수익</small></div></div><div class="liquidation-distance"><div><span>최종 진입가 → 추정 청산가</span><strong id="distance"></strong></div><div class="distance-track"><div id="distance-fill"></div><i id="sl-marker"></i></div><div class="distance-labels"><span id="distance-start"></span><span id="distance-end"></span></div></div><div id="stop-warning" class="stop-note"></div></section></div></section>
+<footer><span>ⓘ 교육용 시뮬레이터 · 투자 판단의 근거로 사용할 수 없습니다.</span><span>청산가는 근사치이며 거래소·증거금 방식·펀딩비에 따라 달라집니다.</span></footer>
+</main></div><div id="toast" role="status"></div><dialog id="method-dialog"><div class="panel-title"><h2>계산 기준</h2><button id="close-method" aria-label="닫기">✕</button></div><p>USDT 선형 무기한 계약의 단순화된 공유 담보 모델입니다. 실시간 시세와 연결되어 있지 않습니다.</p><p>추가 수량 = 가용 미실현 수익 × 재투입 비율 × 최초 레버리지 ÷ 추가 진입가. 이전 단계에서 증거금으로 배정한 수익은 가용 수익에서 제외합니다.</p><p>미실현 수익은 현금 담보에 중복 합산하지 않습니다. 총 자산은 원금 + 미실현 손익 − 진입 수수료입니다. 실효 레버리지는 최종 진입 시점의 포지션 가치 ÷ 최초 원금입니다.</p><p>청산은 총 자산이 유지증거금과 예상 청산 수수료에 도달하는 가격의 근사치입니다. 거래소 위험 한도·펀딩·슬리피지·다른 포지션은 반영하지 않습니다. 격리에서 수익을 증거금으로 옮기려면 일부 실현이 필요하므로 실제 결과와 다릅니다.</p></dialog><script>
+// Linear USDT perpetual, one shared equity pool. Unrealized PnL is not cash collateral.
+function simulate(c){
+ const s=c.direction==='long'?1:-1,f=c.fee/100,m=c.maintenance/100;
+ if(![c.entry,c.margin,c.leverage].every(x=>Number.isFinite(x)&&x>0)||c.leverage<1||c.leverage>100||!Number.isFinite(f)||!Number.isFinite(m)||f<0||f>=.01||m<0||m>=.2)throw Error('진입가·증거금은 0보다 크게, 레버리지는 1~100배, 수수료는 0~1% 미만, 유지증거금률은 0~20% 미만으로 입력해 주세요.');
+ let q=c.margin*c.leverage/c.entry,cost=q*c.entry,fees=cost*f,allocated=0,last=c.entry;
+ const rows=[],warnings=[];
+ const liquidation=()=>Math.max(0,(cost-s*(c.margin-fees))/(q*(1-s*(m+f))));
+ const initialQ=q,initialFees=fees;
+ for(const [i,step] of c.steps.entries()){
+  const pnl=s*(step.price*q-cost),available=Math.max(0,pnl-allocated),amount=available*step.ratio/100;
+  let reason='';
+  if(!Number.isFinite(step.price)||step.price<=0||!Number.isFinite(step.ratio)||step.ratio<=0||step.ratio>100)reason='가격과 재투입 비율(1~100%)을 확인해 주세요.';
+  else if(s*(step.price-last)<=0)reason='수익 방향으로 진행하는 가격을 입력해 주세요.';
+  else if(available<=0)reason='재투입할 수 있는 수익이 없습니다.';
+  const added=reason?0:amount*c.leverage/step.price;
+  if(!reason){q+=added;cost+=added*step.price;fees+=added*step.price*f;allocated+=amount;last=step.price;}else warnings.push(`${i+1}차 추가 진입 제외: ${reason}`);
+  rows.push({...step,pnl,amount:reason?0:amount,added,average:cost/q,liquidation:liquidation(),reason});
+ }
+ const net=p=>s*(p*q-cost)-fees-p*q*f;
+ const baseline=p=>s*(p-c.entry)*initialQ-initialFees-p*initialQ*f;
+ const priceForRoe=r=>(r/100*c.margin+s*cost+fees)/(q*(s-f));
+ const breakEven=priceForRoe(0),liq=liquidation(),equity=c.margin+s*(last*q-cost)-fees;
+ return {q,average:cost/q,fees,rows,warnings,last,liquidation:liq,equity,notional:q*last,effective:q*last/c.margin,breakEven,net,baseline,priceForRoe};
+}
+
+{
+const $=id=>document.getElementById(id),num=id=>Number($(id).value),fmt=(x,d=2)=>Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}),money=x=>`${x>0?'+':x<0?'−':''}${fmt(Math.abs(x))} USDT`;
+let direction='long',steps=[{price:2100,ratio:100},{price:2300,ratio:100}],result;
+const defaults={entry:1900,margin:1000,leverage:5,fee:.05,maintenance:.5,tp:2500,sl:2000};
+function configuration(){return {direction,entry:num('entry'),margin:num('margin'),leverage:num('leverage'),fee:num('fee'),maintenance:num('maintenance'),steps}}
+function renderSteps(){ $('steps').innerHTML=steps.map((v,i)=>`<article class="step-card"><header><div><span>${String(i+1).padStart(2,'0')}</span>${i+1}차 추가 진입</div><button class="remove" data-remove="${i}" aria-label="${i+1}차 추가 진입 삭제">×</button></header><div class="step-fields"><label class="field">추가 진입가<div class="input-wrap"><input aria-label="${i+1}차 추가 진입가" type="number" min="1" data-price="${i}" value="${v.price}"><span>USDT</span></div></label><label class="field">수익 재투입<div class="input-wrap"><input aria-label="${i+1}차 재투입 비율" type="number" min="1" max="100" data-ratio="${i}" value="${v.ratio}"><span>%</span></div></label></div></article>`).join(''); }
+function text(id,v){$(id).textContent=v}function signed(id,v){text(id,money(v));$(id).classList.toggle('negative',v<0);$(id).classList.toggle('positive',v>=0)}
+function update(roeInput=false){try{
+ const c=configuration(); result=simulate(c);const r=result;
+ text('leverage-label',c.leverage);text('initial-notional',fmt(c.margin*c.leverage)+' USDT');text('position-badge',`${direction.toUpperCase()} · ${c.leverage}×`);
+ text('average',fmt(r.average));text('average-change',`최초 진입 대비 ${((r.average/c.entry-1)*100).toFixed(1)}% 이동`);text('liquidation',fmt(r.liquidation));text('effective',fmt(r.effective,2)+'×');text('effective-change',`최초 ${c.leverage}× → ${fmt(r.effective)}× 노출`);text('quantity',fmt(r.q,4)+' ETH');text('notional',fmt(r.notional)+' USDT');text('capital',fmt(c.margin)+' USDT');text('equity',fmt(r.equity)+' USDT');text('breakeven',fmt(r.breakEven)+' USDT');text('fees',fmt(r.fees)+' USDT');
+ text('risk-description',`마지막 진입가에서 ${fmt(Math.abs(r.last-r.breakEven)/r.last*100,1)}% 역행하면 수수료 포함 전체 수익이 사라집니다.`);
+ text('errors',r.warnings.join(' / '));
+ if(roeInput)$('tp').value=r.priceForRoe(num('roe')).toFixed(2);else $('roe').value=(r.net(num('tp'))/c.margin*100).toFixed(2);
+ if(num('tp')<=0||num('sl')<=0){text('errors','익절가와 손절가는 0보다 커야 합니다.');return;}
+ const tp=r.net(num('tp')),sl=r.net(num('sl')),base=r.baseline(num('tp'));signed('tp-profit',tp);text('tp-roe',`${tp>=0?'+':''}${fmt(tp/c.margin*100)}% ROE`);text('baseline',money(base));text('pyramid-profit',money(tp));text('comparison-caption',`추가 진입 효과 ${money(tp-base)}${base>0&&tp>0?` · ${fmt(tp/base,2)}배`:''}`);
+ const max=Math.max(Math.abs(base),Math.abs(tp),1);$('base-bar').style.width=Math.abs(base)/max*100+'%';$('pyramid-bar').style.width=Math.abs(tp)/max*100+'%';
+ signed('sl-profit',sl);text('sl-roe',`원금 대비 ${sl>=0?'+':''}${fmt(sl/c.margin*100)}%`);text('reward-risk',sl<0&&tp>0?`1 : ${fmt(tp/-sl,2)}`:'—');
+ const s=direction==='long'?1:-1,d=Math.abs(r.last-r.liquidation),marker=(s*(r.last-num('sl')))/(d||1)*100;
+ text('distance',`${fmt(d/r.last*100,1)}%`);text('distance-start',`최종 진입 ${fmt(r.last,0)}`);text('distance-end',`청산 ${fmt(r.liquidation,0)}`);$('sl-marker').style.left=Math.max(0,Math.min(100,marker))+'%';$('distance-fill').style.width=Math.max(0,Math.min(100,marker))+'%';
+ const beyond=s*(num('sl')-r.liquidation)<=0;
+ $('stop-warning').classList.toggle('danger',beyond||marker<0);
+ text('stop-warning',beyond?'△ 손절 전에 청산될 수 있습니다. 손절가를 확인하세요.':marker<0?'△ 손절가가 최종 진입가의 수익 방향에 있습니다.':'ⓘ 표시선은 손절가입니다. 급격한 변동 시 체결가는 달라질 수 있습니다.');
+ if(s*(num('tp')-r.last)<0)text('errors',[...r.warnings,'익절가가 마지막 추가 진입가보다 앞에 있습니다. 경로를 확인해 주세요.'].join(' / '));
+ const rows=[{price:c.entry,ratio:0,pnl:0,amount:c.margin,added:c.margin*c.leverage/c.entry,average:c.entry,liquidation:simulate({...c,steps:[]}).liquidation},...r.rows];
+ $('stage-table').innerHTML=rows.map((v,i)=>`<tr><td>${i?`<span class="stage-pill">+${i}</span>${v.reason?'제외':'추가 진입'}`:'최초 진입'}</td><td>${fmt(v.price,0)}</td><td>${i?fmt(v.ratio,0)+'%':'—'}</td><td>${i?fmt(v.pnl):'—'}</td><td>${fmt(v.amount)}</td><td>${fmt(v.added,4)}</td><td>${fmt(v.average)}</td><td>${fmt(v.liquidation,0)}</td></tr>`).join('');drawChart(rows);
+}catch(error){text('errors',error.message);}}
+function drawChart(rows){const values=rows.flatMap(x=>[x.price,x.average,x.liquidation]),min=Math.min(...values)*.92,max=Math.max(...values)*1.08,w=Math.max(330,$('chart').clientWidth),h=170,left=32,right=w-48,top=16,bottom=139;const x=i=>rows.length===1?w/2:left+i*(right-left)/(rows.length-1),y=v=>bottom-(v-min)/(max-min)*(bottom-top);const path=k=>rows.map((v,i)=>`${i?'L':'M'}${x(i)},${y(v[k])}`).join(' ');
+ $('chart').innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="진입가, 누적 평균 진입가, 청산가의 단계별 변화"><defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#2b9870" stop-opacity=".10"/><stop offset="1" stop-color="#2b9870" stop-opacity="0"/></linearGradient></defs>${[0,1,2,3].map(i=>{const yy=top+i*(bottom-top)/3;return `<line x1="${left}" x2="${right}" y1="${yy}" y2="${yy}" stroke="#edf1ee" stroke-dasharray="3 4"/><text x="${w-4}" y="${yy+3}" text-anchor="end">${fmt(max-i*(max-min)/3,0)}</text>`}).join('')}<path d="${path('price')} L${x(rows.length-1)},${bottom} L${x(0)},${bottom} Z" fill="url(#area)"/><path d="${path('liquidation')}" fill="none" stroke="#d1a064" stroke-width="1.5" stroke-dasharray="4 4"/><path d="${path('average')}" fill="none" stroke="#9cafa1" stroke-width="1.5" stroke-dasharray="4 4"/><path d="${path('price')}" fill="none" stroke="#318c67" stroke-width="2"/>${rows.map((r,i)=>`<circle cx="${x(i)}" cy="${y(r.price)}" r="4" fill="white" stroke="#318c67" stroke-width="2"/><text class="price-label" x="${x(i)}" y="${y(r.price)-11}" text-anchor="middle">${fmt(r.price,0)}</text><text x="${x(i)}" y="164" text-anchor="middle">${i?i+'차 추가 진입':'최초 진입'}</text>`).join('')}</svg>`;
+}
+document.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>update(el.id==='roe')));
+$('steps').addEventListener('input',e=>{const p=e.target.dataset.price,r=e.target.dataset.ratio;if(p!==undefined)steps[p].price=Number(e.target.value);if(r!==undefined)steps[r].ratio=Number(e.target.value);update()});
+$('steps').addEventListener('click',e=>{const button=e.target.closest('[data-remove]');if(button){steps.splice(Number(button.dataset.remove),1);renderSteps();update()}});
+$('add-step').onclick=()=>{if(steps.length>=8){toast('최대 8단계까지 추가할 수 있습니다.');return;}steps.push({price:Math.max(1,(steps.at(-1)?.price||num('entry'))+(direction==='long'?200:-200)),ratio:100});renderSteps();update()};
+function setDirection(d){direction=d;$('long').classList.toggle('active',d==='long');$('short').classList.toggle('active',d==='short');$('short').classList.toggle('short-active',d==='short');update()}
+$('long').onclick=()=>setDirection('long');$('short').onclick=()=>setDirection('short');
+$('reset').onclick=()=>{Object.entries(defaults).forEach(([k,v])=>$(k).value=v);steps=[{price:2100,ratio:100},{price:2300,ratio:100}];renderSteps();setDirection('long');toast('기본 예제 시나리오로 초기화했습니다.');};
+function toast(message){text('toast',message);$('toast').classList.add('visible');setTimeout(()=>$('toast').classList.remove('visible'),2800)}
+$('save').onclick=()=>{try{simulate(configuration());const data={...configuration(),tp:num('tp'),sl:num('sl')};try { localStorage.setItem('forma-scenario', JSON.stringify(data)); } catch {}const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='forma-eth-scenario.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('시나리오를 저장하고 JSON 파일을 다운로드했습니다.')}catch{toast('입력값을 먼저 확인해 주세요.')}};
+$('method').onclick=()=>$('method-dialog').showModal();$('close-method').onclick=()=>$('method-dialog').close();
+try{const saved=JSON.parse(localStorage.getItem('forma-scenario'));if(saved&&Array.isArray(saved.steps)&&saved.steps.length<=8){Object.keys(defaults).forEach(k=>{if(Number.isFinite(saved[k]))$(k).value=saved[k]});steps=saved.steps;direction=saved.direction==='short'?'short':'long'}}catch{}
+renderSteps();setDirection(direction);
+window.addEventListener('resize',()=>update());
+
+}
+{
+const layouts = {
+  terminal: {
+    label: '거래 터미널', heading: 'ETH/USDT 주문 실험실',
+    description: '주문 조건을 수정하면서 포지션과 종료 결과를 즉시 확인하세요.',
+    markup: '<div class="desk"><div data-slot="setup"></div><div class="desk-center"><div data-slot="overview"></div><div data-slot="journey"></div></div><div class="desk-exits"><div data-slot="takeprofit"></div><div data-slot="stoploss"></div></div></div>',
+  },
+  guide: {
+    label: '단계별 가이드', heading: '내 포지션 설계하기',
+    description: '진입 조건부터 종료 가격까지, 한 단계씩 입력하세요.',
+    markup: `<nav class="guide-steps" aria-label="가이드 단계">
+      <button data-step="0">1. 최초 진입</button><button data-step="1">2. 추가 진입</button><button data-step="2">3. 결과 확인</button>
+    </nav><div class="guide-grid"><div class="guide-work">
+      <div data-guide="0" data-slot="setup"></div><div data-guide="1" data-slot="pyramid"></div>
+      <div data-guide="2"><div data-slot="journey"></div><div class="guide-exits"><div data-slot="takeprofit"></div><div data-slot="stoploss"></div></div></div>
+      <div class="guide-controls"><button class="button" data-guide-back>이전 단계</button><button class="button dark" data-guide-next>다음 단계 →</button></div>
+    </div><div data-slot="overview"></div></div>`,
+  },
+  timeline: {
+    label: '진입 타임라인', heading: '포지션의 전체 경로',
+    description: '진입과 추가 매수, 종료를 순서대로 연결해 보세요.',
+    markup: `<div class="timeline-grid"><div class="timeline-stack">
+      <article><h2>최초 진입</h2><div data-slot="setup"></div></article>
+      <article><h2>수익 재투입</h2><div data-slot="pyramid"></div></article>
+      <article><h2>포지션 종료</h2><div class="timeline-exits"><div data-slot="takeprofit"></div><div data-slot="stoploss"></div></div></article>
+    </div><aside class="timeline-results"><div data-slot="journey"></div><div data-slot="overview"></div></aside></div>`,
+  },
+  risk: {
+    label: '리스크 대시보드', heading: '포지션 리스크 점검',
+    description: '원금 대비 노출과 청산 거리를 먼저 확인하세요.',
+    markup: `<div class="risk-grid"><div data-slot="overview"></div><div data-slot="stoploss"></div>
+      <details class="panel risk-settings"><summary>진입 조건 편집</summary><div data-slot="setup"></div></details>
+      <div data-slot="journey"></div><div data-slot="takeprofit"></div></div>`,
+  },
+  report: {
+    label: '손익 비교 리포트', heading: '추가 진입의 손익 비교',
+    description: '같은 익절가에서 단일 진입과 피라미딩의 수수료 차감 후 손익을 비교하세요.',
+    markup: `<div class="report-grid"><div data-slot="takeprofit"></div><div data-slot="stoploss"></div>
+      <details class="panel report-settings"><summary>시나리오 조건 편집</summary><div data-slot="setup"></div></details>
+      <section class="report-analysis"><nav class="report-tabs" aria-label="리포트 상세">
+        <button data-report="journey">단계별 기록</button><button data-report="overview">포지션 요약</button>
+      </nav><div data-slot="journey"></div><div data-slot="overview"></div></section></div>`,
+  },
+};
+
+const main = document.querySelector('main');
+const header = main.querySelector('.page-heading');
+const title = header.querySelector('h1');
+const description = header.querySelector('p');
+const originalText = [title.textContent, description.textContent];
+const parts = Object.fromEntries(
+  ['setup', 'overview', 'journey', 'takeprofit', 'stoploss'].map(key => [key, main.querySelector('.' + key)]),
+);
+const originalGrid = main.querySelector('.calculator-grid');
+const originalOutcomes = main.querySelector('.outcome-section');
+const originalParents = new Map(Object.values(parts).map(part => [part, part.parentNode]));
+const divider = parts.setup.querySelector('.section-divider');
+parts.pyramid = document.createElement('section');
+parts.pyramid.className = 'panel pyramid-panel';
+const chooser = document.createElement('nav');
+chooser.className = 'layout-picker';
+chooser.setAttribute('aria-label', '계산기 시안');
+const host = document.createElement('div');
+host.className = 'layout-host';
+main.prepend(chooser);
+originalGrid.before(host);
+
+const buttons = new Map();
+for (const [key, label] of [...Object.entries(layouts).map(([key, layout]) => [key, layout.label]), ['original', '기존 화면']]) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = label;
+  button.dataset.view = key;
+  button.addEventListener('click', () => {
+    const url = new URL(location.href);
+    url.searchParams.set('view', key);
+    history.pushState(null, '', url);
+    show(key);
+  });
+  chooser.append(button);
+  buttons.set(key, button);
+}
+
+const refreshChart = () => requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+
+function initGuide() {
+  const stepButtons = [...host.querySelectorAll('[data-step]')];
+  const back = host.querySelector('[data-guide-back]');
+  const next = host.querySelector('[data-guide-next]');
+  let activeStep = 0;
+  function select(index, focus = false) {
+    activeStep = index;
+    host.querySelectorAll('[data-guide]').forEach(section => {
+      section.hidden = Number(section.dataset.guide) !== index;
+    });
+    stepButtons.forEach((button, i) => {
+      if (i === index) button.setAttribute('aria-current', 'step');
+      else button.removeAttribute('aria-current');
+    });
+    back.disabled = index === 0;
+    next.hidden = index === stepButtons.length - 1;
+    refreshChart();
+    if (focus) stepButtons[index].focus();
+  }
+  back.onclick = () => select(activeStep - 1, true);
+  next.onclick = () => select(activeStep + 1, true);
+  stepButtons.forEach((button, i) => button.onclick = () => select(i));
+  select(0);
+}
+
+function initReport() {
+  const tabs = host.querySelectorAll('[data-report]');
+  function select(key) {
+    tabs.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.report === key)));
+    for (const name of ['journey', 'overview']) {
+      host.querySelector(`[data-slot="${name}"]`).hidden = name !== key;
+    }
+    refreshChart();
+  }
+  tabs.forEach(button => button.onclick = () => select(button.dataset.report));
+  select('journey');
+}
+
+function show(key) {
+  if (!buttons.has(key)) key = 'terminal';
+  for (const [part, parent] of originalParents) parent.append(part);
+  parts.setup.append(...parts.pyramid.childNodes);
+  parts.pyramid.remove();
+  const layout = layouts[key];
+  document.body.dataset.layout = key;
+  buttons.forEach((button, name) => button.setAttribute('aria-pressed', String(name === key)));
+  originalGrid.hidden = originalOutcomes.hidden = Boolean(layout);
+  title.textContent = layout?.heading ?? originalText[0];
+  description.textContent = layout?.description ?? originalText[1];
+  host.innerHTML = layout?.markup ?? '';
+  if (!layout) {
+    refreshChart();
+    return;
+  }
+  if (host.querySelector('[data-slot="pyramid"]')) {
+    while (divider.nextSibling) parts.pyramid.append(divider.nextSibling);
+  }
+  host.querySelectorAll('[data-slot]').forEach(slot => slot.append(parts[slot.dataset.slot]));
+  if (key === 'guide') initGuide();
+  if (key === 'report') initReport();
+  refreshChart();
+}
+
+chooser.remove();
+show("terminal");
+
+}
+</script></body></html>
+
