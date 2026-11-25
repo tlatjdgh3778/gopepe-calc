@@ -6,7 +6,7 @@ import { LiquidationCalculator } from "@/components/liquidation-calculator"; // 
 // ---
 import { MaxQuantityCalculator } from "@/components/max-quantity-calculator"; // F-4
 // ---
-// F-5 자리
+import { AverageEntryCalculator } from "@/components/average-entry-calculator"; // F-5
 
 const items = [
   { value: "pnl", label: "손익", content: <PnlCalculator /> },
@@ -16,7 +16,7 @@ const items = [
   // ---
   { value: "max-quantity", label: "최대 수량", content: <MaxQuantityCalculator /> }, // F-4
   // ---
-  // F-5 자리
+  { value: "average-entry", label: "평균 진입가", content: <AverageEntryCalculator /> }, // F-5
 ];
 
 export default function Home() {
