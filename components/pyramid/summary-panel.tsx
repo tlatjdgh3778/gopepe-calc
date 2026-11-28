@@ -12,19 +12,25 @@ import {
   tierWarningText,
   withCoin,
 } from "@/components/pyramid/display";
-import { Panel } from "@/components/pyramid/panel";
+import { INNER_CARD_RADIUS, Panel } from "@/components/pyramid/panel";
 import { ResultRow } from "@/components/result-row";
 import { formatCoinQty, formatPercent, formatPrice, formatUsdt } from "@/lib/format";
 import { exceedsFirstTier, formatDistance } from "@/lib/liquidation";
 import type { PyramidResult } from "@/lib/pyramid";
 import type { SymbolInfo } from "@/lib/symbols";
+import { cn } from "@/lib/utils";
 
 const INSTANT_WARNING = "진입 즉시 청산되는 포지션입니다.";
 
 /** 포지션 요약의 큰 지표 하나(이름·값·보조 문구). */
 function Metric({ label, value, sub }: { label: string; value: string; sub: string | null }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1 rounded-md border border-input bg-muted p-3 [&>dd]:text-left [&>dd:first-of-type]:text-xl [&>dd:first-of-type]:font-semibold">
+    <div
+      className={cn(
+        INNER_CARD_RADIUS,
+        "flex min-w-0 flex-col gap-1 border border-input bg-muted p-3 [&>dd]:text-left [&>dd:first-of-type]:text-xl [&>dd:first-of-type]:font-semibold",
+      )}
+    >
       <ResultRow label={label} value={value} />
       {sub === null ? null : <dd className="text-xs text-muted-foreground">{sub}</dd>}
     </div>
@@ -125,9 +131,16 @@ export function SummaryPanel({
       ) : null}
 
       {showRisk ? (
-        <div className="flex flex-col gap-1 rounded-md border border-[#554432] bg-[#2c261e] p-3 text-sm text-[#e7be80]">
+        <div
+          className={cn(
+            INNER_CARD_RADIUS,
+            "flex flex-col gap-1 border border-warning-border bg-warning p-3 text-sm text-warning-foreground",
+          )}
+        >
           <strong className="font-semibold">수익으로 키운 포지션도, 내 원금의 리스크입니다.</strong>
-          <p className="text-[#d3ba93]">{riskNoticeText(formatDistance(riskDistance))}</p>
+          <p className="text-pretty text-warning-muted-foreground">
+            {riskNoticeText(formatDistance(riskDistance))}
+          </p>
         </div>
       ) : null}
     </Panel>

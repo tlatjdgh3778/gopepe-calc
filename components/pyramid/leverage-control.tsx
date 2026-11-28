@@ -4,6 +4,7 @@ import * as React from "react";
 import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 
 import { formatLeverageMark } from "@/components/pyramid/display";
+import { WithUnit } from "@/components/pyramid/panel";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { filtered, LEVERAGE_PATTERN } from "@/lib/input";
@@ -30,9 +31,9 @@ export function LeverageControl({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-end justify-between gap-3">
-        <Label htmlFor={id}>레버리지</Label>
-        <div className="flex w-24 items-center gap-1.5">
+      <WithUnit unit="×">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor={id}>레버리지</Label>
           <Input
             id={id}
             type="text"
@@ -41,11 +42,9 @@ export function LeverageControl({
             value={value}
             onChange={filtered(LEVERAGE_PATTERN, onChange)}
             onBlur={onBlur}
-            className="text-right"
           />
-          <span className="text-sm text-muted-foreground">×</span>
         </div>
-      </div>
+      </WithUnit>
       <SliderPrimitive.Root
         value={sliderValue}
         min={1}

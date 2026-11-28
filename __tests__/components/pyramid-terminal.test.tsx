@@ -280,9 +280,9 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
      * @then 예상 순수익 +2,404.00 USDT, ROE +240.40%, 추가 진입 없이 +1,572.57 USDT, 추가 진입 효과 +831.42 USDT · 1.52배다
      * @then 손절 시 예상 손익 −381.32 USDT, 원금 대비 −38.13%, 손익비 1 : 6.30, 청산가까지 거리 17.60%(틱 청산가 기준)다
      * @then 리스크 문구의 역행 %는 10.06%다
-     * @then 경로 표 최초 진입 행: 진입가 1,900.00 / 재투입 — / 시점 수익 — / 투입 증거금 1,000.00 USDT / 추가 수량 2.63 ETH / 누적 평단 1,900.00 / 청산가 1,526.93
-     * @then 경로 표 1차 추가 진입 행: 진입가 2,100.00 / 재투입 100% / 시점 수익 +526.31 USDT / 투입 증거금 526.31 USDT / 추가 수량 1.25 ETH / 누적 평단 1,964.51 / 청산가 1,714.78
-     * @then 경로 표 2차 추가 진입 행: 진입가 2,300.00 / 재투입 100% / 시점 수익 +1,303.25 USDT / 투입 증거금 776.94 USDT / 추가 수량 1.68 ETH / 누적 평단 2,066.17 / 청산가 1,895.20
+     * @then 경로 표 최초 진입 행: 진입가 1,900.00 / 누적 평단 1,900.00 / 청산가 1,526.93 / 재투입 — / 시점 수익 — / 투입 증거금 1,000.00 USDT / 추가 수량 2.63 ETH
+     * @then 경로 표 1차 추가 진입 행: 진입가 2,100.00 / 누적 평단 1,964.51 / 청산가 1,714.78 / 재투입 100% / 시점 수익 +526.31 USDT / 투입 증거금 526.31 USDT / 추가 수량 1.25 ETH
+     * @then 경로 표 2차 추가 진입 행: 진입가 2,300.00 / 누적 평단 2,066.17 / 청산가 1,895.20 / 재투입 100% / 시점 수익 +1,303.25 USDT / 투입 증거금 776.94 USDT / 추가 수량 1.68 ETH
      * @then 경로 표의 시점 수익은 손익이므로 부호를 표시하고, 투입 증거금은 부호 없이 표시한다
      */
     it("[DoD-9][DoD-17][DoD-18][DoD-19][DoD-20][DoD-24][DoD-25][DoD-26] 처음 연 화면의 결과가 기준 사례 P1의 표시값과 같다", async () => {
@@ -315,43 +315,44 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
         summary.getByText("마지막 진입가에서 10.06% 역행하면 수수료 포함 전체 수익이 사라집니다."),
       ).toBeTruthy();
 
+      // 칸 순서: 진입가 | 누적 평단 | 청산가 | 재투입 | 시점 수익 | 투입 증거금 | 추가 수량(행 머리글 제외).
       const rows = bodyRows().map(readRow);
       expect(rows).toEqual([
         {
           name: "최초 진입",
-          cells: ["1,900.00", DASH, DASH, "1,000.00 USDT", "2.63 ETH", "1,900.00", "1,526.93"],
+          cells: ["1,900.00", "1,900.00", "1,526.93", DASH, DASH, "1,000.00 USDT", "2.63 ETH"],
         },
         {
           name: "1차 추가 진입",
           cells: [
             "2,100.00",
+            "1,964.51",
+            "1,714.78",
             "100%",
             "+526.31 USDT",
             "526.31 USDT",
             "1.25 ETH",
-            "1,964.51",
-            "1,714.78",
           ],
         },
         {
           name: "2차 추가 진입",
           cells: [
             "2,300.00",
+            "2,066.17",
+            "1,895.20",
             "100%",
             "+1,303.25 USDT",
             "776.94 USDT",
             "1.68 ETH",
-            "2,066.17",
-            "1,895.20",
           ],
         },
       ]);
       // 시점 수익은 부호가 있고 투입 증거금은 부호가 없다.
-      for (const row of rows.slice(1)) {
-        expect(row.cells[2]?.startsWith("+")).toBe(true);
-        expect(row.cells[3]?.startsWith("+")).toBe(false);
-        expect(row.cells[3]?.startsWith("−")).toBe(false);
-      }
+      const stepCells = rows.slice(1).map((row) => ({ pnl: row.cells[4], margin: row.cells[5] }));
+      expect(stepCells.map(({ pnl }) => pnl?.startsWith("+"))).toEqual([true, true]);
+      expect(
+        stepCells.map(({ margin }) => margin?.startsWith("+") || margin?.startsWith("−")),
+      ).toEqual([false, false]);
     });
   });
 
@@ -400,7 +401,7 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
         summary.getByText("마지막 진입가에서 6.39% 역행하면 수수료 포함 전체 수익이 사라집니다."),
       ).toBeTruthy();
 
-      expect(bodyRows().map((row) => readRow(row).cells[6])).toEqual([
+      expect(bodyRows().map((row) => readRow(row).cells[2])).toEqual([
         "164.000",
         "157.460",
         "142.970",
@@ -686,7 +687,7 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
           within(region("익절")).getByRole("definition", { name: "예상 순수익" }),
           ...bodyRows()
             .slice(1)
-            .map((row) => rowCell(row, 2)),
+            .map((row) => rowCell(row, 4)),
         ];
         for (const el of profitValues) {
           expect(el.getAttribute("data-tone")).toBe("profit");
@@ -705,7 +706,7 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
      * @spec DoD-20
      * @given 화면을 처음 연다(P1)
      * @when 포지션 경로 영역의 표를 읽는다
-     * @then 열 머리글은 순서대로 `진입 단계 | 진입가 | 재투입 | 시점 수익 | 투입 증거금 | 추가 수량 | 누적 평단 | 청산가`다
+     * @then 열 머리글은 순서대로 `진입 단계 | 진입가 | 누적 평단 | 청산가 | 재투입 | 시점 수익 | 투입 증거금 | 추가 수량`다
      * @then 본문 행은 3개다(최초 진입 + 단계 2개)
      * @then 첫 행은 최초 진입이며 재투입·시점 수익 칸은 `—`, 투입 증거금은 초기 증거금이다
      * @then 둘째·셋째 행의 진입 단계 칸은 `1차 추가 진입`·`2차 추가 진입`이다
@@ -720,20 +721,21 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
       expect(headers).toEqual([
         "진입 단계",
         "진입가",
+        "누적 평단",
+        "청산가",
         "재투입",
         "시점 수익",
         "투입 증거금",
         "추가 수량",
-        "누적 평단",
-        "청산가",
       ]);
 
+      // 칸 인덱스(행 머리글 제외): 3 재투입, 4 시점 수익, 5 투입 증거금.
       const rows = bodyRows().map(readRow);
       expect(rows).toHaveLength(3);
       expect(rows[0].name).toBe("최초 진입");
-      expect(rows[0].cells[1]).toBe(DASH);
-      expect(rows[0].cells[2]).toBe(DASH);
-      expect(rows[0].cells[3]).toBe(result("포지션 요약", "실제 투입 원금"));
+      expect(rows[0].cells[3]).toBe(DASH);
+      expect(rows[0].cells[4]).toBe(DASH);
+      expect(rows[0].cells[5]).toBe(result("포지션 요약", "실제 투입 원금"));
       expect(rows[1].name).toBe("1차 추가 진입");
       expect(rows[2].name).toBe("2차 추가 진입");
     });
@@ -756,7 +758,7 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
       for (const [input, expected] of samples) {
         const { user } = renderTerminal();
         await setField(user, "1차 재투입 비율", input);
-        expect(readRow(bodyRows()[1]).cells[1]).toBe(expected);
+        expect(readRow(bodyRows()[1]).cells[3]).toBe(expected);
         cleanup();
       }
     });
@@ -1156,7 +1158,7 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
       expect(result("포지션 요약", "추정 청산가")).toBe(NO_LIQUIDATION);
       const rows = bodyRows();
       expect(rows).toHaveLength(1);
-      expect(readRow(rows[0]).cells[6]).toBe(NO_LIQUIDATION);
+      expect(readRow(rows[0]).cells[2]).toBe(NO_LIQUIDATION);
       expectCleanScreen();
     });
 
@@ -1178,8 +1180,8 @@ describe("피라미딩 터미널 — 입력하는 즉시 포지션 요약과 단
 
       const rows = bodyRows();
       expect(rows).toHaveLength(2);
-      expect(readRow(rows[0]).cells[6]).toBe(NO_LIQUIDATION);
-      expect(readRow(rows[1]).cells[6]).toBe("183.22");
+      expect(readRow(rows[0]).cells[2]).toBe(NO_LIQUIDATION);
+      expect(readRow(rows[1]).cells[2]).toBe("183.22");
       expect(result("포지션 요약", "추정 청산가")).toBe("183.22");
       expectCleanScreen();
     });

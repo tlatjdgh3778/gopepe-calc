@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Info } from "lucide-react";
 
 import { DecimalField } from "@/components/fields/decimal-field";
 import { FieldWarning } from "@/components/fields/field-warning";
@@ -108,8 +109,8 @@ export function StopLossPanel({
       {stopWarning ? (
         <FieldWarning id={`${id}-stop-warning`}>{stopWarning}</FieldWarning>
       ) : (
-        <p className="text-xs text-muted-foreground">
-          <span aria-hidden="true">ⓘ </span>
+        <p className="flex items-start gap-1.5 text-xs text-pretty text-muted-foreground">
+          <Info aria-hidden="true" className="mt-px size-3.5 shrink-0" />
           {STOP_NOTE}
         </p>
       )}

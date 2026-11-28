@@ -3,7 +3,7 @@
 - 상태: 승인
 - 스펙: docs/specs/pyramid-terminal.md
 - 기준 코드: 5e4964b + 작업 트리(스펙 신규, 미커밋)
-- 최종 갱신: 2026-11-27
+- 최종 갱신: 2026-11-28
 
 ## 1. 구현 전략
 
@@ -42,13 +42,13 @@
 - 상태: 완료
 - 목적: recharts·pretendard와 shadcn button·slider·dialog·chart를 추가하고 다크 고정 테마와 Pretendard를 적용한다
 - 선행: 없음
-- 연결 항목: DoD-39, DoD-40
-- 수정 대상: `package.json`, `bun.lock` — 의존성 추가 / `components/ui/button.tsx`, `components/ui/slider.tsx`, `components/ui/dialog.tsx`, `components/ui/chart.tsx` — 신규 / `app/globals.css` — 다크 단일 토큰 / `app/layout.tsx` — 폰트·`dark` 클래스, title 제거
+- 연결 항목: DoD-39, DoD-40, DoD-48, DoD-49, DoD-53, DoD-54, DoD-56
+- 수정 대상: `package.json`, `bun.lock` — 의존성 추가 / `components/ui/button.tsx`, `components/ui/slider.tsx`, `components/ui/dialog.tsx`, `components/ui/chart.tsx` — 신규 / `app/globals.css` — 다크 단일 토큰 / `app/layout.tsx` — 폰트·`dark` 클래스, title 제거 / (다듬기) `components/ui/button.tsx`·`components/ui/toggle.tsx` — `transition-all`을 바뀌는 속성만으로, toggle 선택 상태를 primary 계열로(DoD-48 기반) / `components/ui/dialog.tsx`·`components/ui/select.tsx` — zoom 클래스를 `motion-safe:` 아래로 / `app/layout.tsx` — body `antialiased` / `app/globals.css` — `--warning` 계열 토큰
 - 따라야 할 패턴: shadcn base-nova 생성물, 기존 토큰 이름(`--profit`·`--loss` 유지) — 근거: `components.json`, `app/globals.css`
 - 완료 조건: 연결 항목 충족(T-12 통과). 추가로 (1) `components.json`과 기존 ui 파일 7개가 바뀌지 않는다 (2) shadcn add가 globals.css의 chart 변수를 덮어쓰면 다크 값으로 다시 맞춘다 (3) 네트워크로 chart를 받지 못하면 BLOCKED로 보고한다 (4) `bun install --frozen-lockfile`이 통과한다 — 검증: 명령 + 확인 절차(diff 대조)
 - 실행 명령: `bunx shadcn add button slider dialog chart`, `bun add pretendard`, `bunx oxfmt components/ui app`, `bun run typecheck`, `bun install --frozen-lockfile`
-- 수정 금지: components/fields/, 기존 components/ui 파일, lib/, __tests__/, e2e/, components.json
-- 구현 기록: seongho:frontend-dev(인스턴스 B) — package.json, bun.lock(recharts 3.8.0, pretendard ^1.3.9), components/ui/{button,slider,dialog,chart}.tsx, app/globals.css, app/layout.tsx. 수정 0/3. 오케스트레이터 확인: typecheck·frozen-lockfile·oxlint 통과, components.json·기존 ui 무변경
+- 수정 금지: components/fields/, 위에 적지 않은 기존 components/ui 파일, lib/, __tests__/, e2e/, components.json
+- 구현 기록: seongho:frontend-dev(인스턴스 B) — package.json, bun.lock(recharts 3.8.0, pretendard ^1.3.9), components/ui/{button,slider,dialog,chart}.tsx, app/globals.css, app/layout.tsx. 수정 0/3. 오케스트레이터 확인: typecheck·frozen-lockfile·oxlint 통과, components.json·기존 ui 무변경 | 다듬기 재개(2026-11-27, 사용량 한도로 1회 중단 후 같은 인스턴스 재개): button·toggle transition 속성 한정·toggle 선택 primary, dialog·select zoom/slide motion-safe, body antialiased, globals.css --warning·--warning-border·--warning-foreground·--warning-muted-foreground 토큰. 오케스트레이터 확인: oxlint 통과, transition all 0건, components.json·fields 무변경
 
 ### T-3 — 피라미딩 터미널 화면 컴포넌트
 
@@ -56,13 +56,13 @@
 - 상태: 완료
 - 목적: `components/pyramid/*`와 `components/result-row.tsx`로 터미널 화면을 만든다
 - 선행: T-1, T-2
-- 연결 항목: DoD-8, DoD-9, DoD-10, DoD-11, DoD-12, DoD-13, DoD-14, DoD-15, DoD-16, DoD-17, DoD-18, DoD-19, DoD-20, DoD-21, DoD-22, DoD-23, DoD-24, DoD-25, DoD-26, DoD-27, DoD-28, DoD-29, DoD-30, DoD-32, DoD-33, DoD-34, DoD-35, DoD-36, DoD-37, DoD-38, EC-1, EC-2, EC-3, EC-4, EC-6, EC-7, EC-8, EC-9, EC-10, EC-12, EC-13, EC-14, EC-16, EC-18, EC-19, EC-20, EC-21, EC-22, EC-23, EC-24, EC-25, EC-26, EC-27, EC-28, EC-29, EC-30, EC-31, EC-32, EC-33, EC-34, EC-35
-- 수정 대상: `components/pyramid/` — 신규(1장의 파일들과 `display.ts`) / `components/result-row.tsx` — 신규(`ResultRow` 이동)
+- 연결 항목: DoD-8, DoD-9, DoD-10, DoD-11, DoD-12, DoD-13, DoD-14, DoD-15, DoD-16, DoD-17, DoD-18, DoD-19, DoD-20, DoD-21, DoD-22, DoD-23, DoD-24, DoD-25, DoD-26, DoD-27, DoD-28, DoD-29, DoD-30, DoD-32, DoD-33, DoD-34, DoD-35, DoD-36, DoD-37, DoD-38, EC-1, EC-2, EC-3, EC-4, EC-6, EC-7, EC-8, EC-9, EC-10, EC-12, EC-13, EC-14, EC-16, EC-18, EC-19, EC-20, EC-21, EC-22, EC-23, EC-24, EC-25, EC-26, EC-27, EC-28, EC-29, EC-30, EC-31, EC-32, EC-33, EC-34, EC-35, DoD-47, DoD-48, DoD-50, DoD-51, DoD-52, DoD-54, DoD-55, DoD-56
+- 수정 대상: `components/pyramid/` — 신규(1장의 파일들과 `display.ts`) / `components/result-row.tsx` — 신규(`ResultRow` 이동) / (다듬기) `components/pyramid/path-panel.tsx` — 열 순서(DoD-20), 첫 열 sticky, 오른쪽 끝 페이드 단서 / `components/pyramid/pyramid-terminal.tsx` — DOM 순서 설정→요약→추가 진입→경로→익절→손절과 grid 영역 배치(DoD-37), lucide 아이콘 / `setup-panel.tsx`·`step-editor.tsx`·`method-dialog.tsx`·`stop-loss-panel.tsx`·`market-strip.tsx` — lucide 아이콘, 44px 터치 영역, 컨테이너 기준 1열 접힘 / `panel.tsx`·`summary-panel.tsx`·`step-editor.tsx` — 동심 반경, `text-balance`·`text-pretty`·`break-keep`, 위험 상자 색은 `--warning` 토큰 / `components/fields/side-toggle.tsx` — 필요 시 선택 상태 클래스만
 - 따라야 할 패턴: 입력 원문 상태와 렌더 시 계산, F-5 단계 id·포커스, 공용 `SymbolSelect`·`SideToggle`·`DecimalField`·`SignedDecimalField`·`FieldWarning`, F-3 한도·`roundLiquidation`·`isStopBeforeLiquidation` 사용 — 근거: `components/average-entry-calculator.tsx`, `components/liquidation-calculator.tsx`, `components/fields/`
 - 완료 조건: 연결 항목 충족(T-7·T-8·T-9·T-10 통과, 레이아웃은 T-12). 추가로 (1) index key가 없고 id 증가가 updater 밖이다 (2) 렌더 경로에 `Date`·`Math.random`·`crypto`가 없다 (3) 컴포넌트 파일에 `⚠` 리터럴이 없다 (4) 표시 문자열은 `lib/format`·`formatDistance`·`display.ts`로만 만든다 (5) 차트 데이터에 비유한 값이 들어가지 않는다 (6) 장식 글리프(↻, ＋, ⓘ)는 `aria-hidden`이다 (7) `components/fields/`·기존 `components/ui/` diff가 비어 있다(슬라이더 접근 이름 전달에 필요한 `ui/slider` 최소 수정만 허용) — 검증: 테스트 + 확인 절차(파일 대조)
 - 실행 명령: `bunx oxfmt components/pyramid components/result-row.tsx`, `bunx oxlint components/pyramid components/result-row.tsx`, `bun run typecheck`, `bun run test __tests__/components`
-- 수정 금지: lib/, app/, components/fields/, 기존 계산기 파일, __tests__/, e2e/, package.json
-- 구현 기록: seongho:frontend-dev(인스턴스 C, 사용량 한도로 1회 중단 후 같은 인스턴스 재개) — components/pyramid/{pyramid-terminal,market-strip,setup-panel,leverage-control,step-editor,summary-panel,path-panel,path-chart,take-profit-panel,stop-loss-panel,method-dialog,panel}.tsx, components/pyramid/display.ts, components/result-row.tsx. 수정 1/3 — 원인: 8단계 사용자 결정으로 푸터 "교육용 시뮬레이터" 문구 제거. 오케스트레이터 확인: oxfmt·oxlint·typecheck 통과, __tests__/components 161 passed·84 todo, fields·ui·lib diff 없음. 시안 부가 문구 추가는 verify에서 범위 판정
+- 수정 금지: lib/, app/, components/fields/의 side-toggle 외 파일, components/ui/(T-2 몫), __tests__/, e2e/, package.json
+- 구현 기록: seongho:frontend-dev(인스턴스 C, 사용량 한도로 1회 중단 후 같은 인스턴스 재개) — components/pyramid/{pyramid-terminal,market-strip,setup-panel,leverage-control,step-editor,summary-panel,path-panel,path-chart,take-profit-panel,stop-loss-panel,method-dialog,panel}.tsx, components/pyramid/display.ts, components/result-row.tsx. 수정 1/3 — 원인: 8단계 사용자 결정으로 푸터 "교육용 시뮬레이터" 문구 제거. 오케스트레이터 확인: oxfmt·oxlint·typecheck 통과, __tests__/components 161 passed·84 todo, fields·ui·lib diff 없음. 시안 부가 문구 추가는 verify에서 범위 판정 | 다듬기 재개(2026-11-27, 사용량 한도로 1회 중단 후 같은 인스턴스 재개): path-panel 열 순서·sticky·페이드, DOM 순서+grid 영역, lucide 아이콘·레버리지 WithUnit, 44px 터치 영역, 동심 반경, break-keep·text-balance·text-pretty, 단계 카드 @container, 위험 상자 warning 토큰, side-toggle 클래스. 오케스트레이터 확인: oxlint·typecheck 통과, 글리프·order·색 값 0건 | 수정 2/3 — 원인: 7단계 다듬기 검증 1회차 제품 결함 2건(DoD-50 단계 삭제 버튼 가장자리 3지점이 카드 머리 줄에 가려짐 — e2e 실패, DoD-54 Portal 다이얼로그에 break-keep·text-pretty·text-balance 미적용 — verify 부분 충족). 수정: 테두리 있는 터치 대상 after:-inset-px, 다이얼로그 break-keep·text-balance·text-pretty
 
 ### T-4 — 화면 교체와 기존 자산 삭제
 
@@ -90,7 +90,7 @@
 - 완료 조건: 연결 항목 충족. 추가로 (1) 문서에 적힌 파일·export가 실제와 일치한다 (2) 다른 절은 바뀌지 않는다 — 검증: 확인 절차(문서·코드 대조)
 - 실행 명령: `git diff CLAUDE.md`
 - 수정 금지: 코드, 테스트, docs/
-- 구현 기록: general-purpose(문서 전용 에이전트 없음) — CLAUDE.md "새 계산기 추가" 절을 "화면 구조(F-6 피라미딩 터미널)"로 교체. 수정 0/3
+- 구현 기록: general-purpose(문서 전용 에이전트 없음) — CLAUDE.md "새 계산기 추가" 절을 "화면 구조(F-6 피라미딩 터미널)"로 교체. 수정 0/3 | 다듬기 후속: CLAUDE.md panel.tsx INNER_CARD_RADIUS 누락 보완(verify Low)
 
 ### T-6 — lib 단위 테스트
 
@@ -138,7 +138,7 @@
 - 완료 조건: 연결 항목 충족. 추가로 (1) 접근 이름은 정확 일치로 찾는다(`레버리지`와 `레버리지 슬라이더` 구별) (2) 경고는 `aria-describedby` 또는 `⚠`·`—` 정확 비교로 판정한다 (3) 슬라이더는 role `slider`에 키보드로 조작한다 (4) 각 EC 테스트에서 `NaN`·`Infinity`가 없고 `console.error`가 호출되지 않는다 — 검증: 테스트
 - 실행 명령: `bun run test __tests__/components/pyramid-terminal.test.tsx`, `bunx oxfmt --check __tests__/components/pyramid-terminal.test.tsx`, `bunx oxlint __tests__/components/pyramid-terminal.test.tsx`, `bun run typecheck`
 - 수정 금지: components/, lib/, app/, 다른 테스트 파일, vitest.setup.ts, vitest.config.mts, package.json
-- 구현 기록: seongho:test-dev(T-8 골격 인스턴스, 살 모드) — __tests__/components/pyramid-terminal.test.tsx. 수정 1/3 — 원인: 본문 선택자 결함(심볼 combobox textContent에 ▼ 포함, 결과 텍스트 비교에 차트 style useId 포함). 수정 후 37 passed, digest 동결 유지
+- 구현 기록: seongho:test-dev(T-8 골격 인스턴스, 살 모드) — __tests__/components/pyramid-terminal.test.tsx. 수정 1/3 — 원인: 본문 선택자 결함(심볼 combobox textContent에 ▼ 포함, 결과 텍스트 비교에 차트 style useId 포함). 수정 후 37 passed, digest 동결 유지 | 다듬기 재개(2026-11-27): DoD-20 열 순서 변경으로 경로 표 assertion 갱신 필요 — 골격 update 대상. 본문 열 인덱스 갱신 대상: pyramid-terminal.test.tsx:338, :622-624, :669, :1069, :1091-1092 | 다듬기 본문: DoD-9·DoD-20 채움, 열 인덱스 5곳 수정. 오케스트레이터 확인: bun run test 22 files·267 passed
 - 테스트 파일·runner: `__tests__/components/pyramid-terminal.test.tsx` — Vitest(jsdom) + Testing Library + user-event
 - mock 허용 경계: `console.error`의 `vi.spyOn`(관찰만)만 허용한다. 차트는 mock 없이 실제로 렌더하고 선 렌더는 판정하지 않는다(차트 데이터는 T-7, 실제 선·범례·툴팁은 T-12). `vi.mock`, jsdom 폴리필, `vitest.setup.ts` 변경은 금지하고 필요하면 BLOCKED로 보고한다 — 사용자 확정 2026-11-26
 - 데이터 격리: 테스트마다 새로 렌더하고 `vitest.setup.ts`의 `cleanup`으로 DOM을 비운다
@@ -155,7 +155,7 @@
 - 완료 조건: 연결 항목 충족. 추가로 (1) DoD-30은 서로 다른 값의 3단계에서 중간 단계를 지운 뒤 앞당겨진 단계 값을 본다 (2) 경고는 단계 카드 범위에서 판정한다 (3) `NaN`·`Infinity`·`console.error`가 없다 — 검증: 테스트
 - 실행 명령: `bun run test __tests__/components/pyramid-steps.test.tsx`, `bunx oxfmt --check __tests__/components/pyramid-steps.test.tsx`, `bunx oxlint __tests__/components/pyramid-steps.test.tsx`, `bun run typecheck`
 - 수정 금지: components/, lib/, app/, 다른 테스트 파일, vitest.setup.ts, vitest.config.mts
-- 구현 기록: seongho:test-dev(T-9 골격 인스턴스, 살 모드) — __tests__/components/pyramid-steps.test.tsx. 수정 0/3. 실행 통과
+- 구현 기록: seongho:test-dev(T-9 골격 인스턴스, 살 모드) — __tests__/components/pyramid-steps.test.tsx. 수정 0/3. 실행 통과 | 다듬기 재개(2026-11-27): DoD-20 열 순서 변경으로 본문 열 인덱스 갱신 필요 — pyramid-steps.test.tsx:329(rowCells[7]=청산가), :599-601(cells 배열 순서). 골자 변경 없음 | 다듬기 본문: 열 인덱스 2곳 수정. 오케스트레이터 확인: bun run test 22 files·267 passed
 - 테스트 파일·runner: `__tests__/components/pyramid-steps.test.tsx` — Vitest(jsdom) + Testing Library + user-event
 - mock 허용 경계: `console.error`의 `vi.spyOn`(관찰만)만 허용한다. 차트는 mock 없이 실제로 렌더하고 선 렌더는 판정하지 않는다(차트 데이터는 T-7, 실제 선·범례·툴팁은 T-12). `vi.mock`, jsdom 폴리필, `vitest.setup.ts` 변경은 금지하고 필요하면 BLOCKED로 보고한다 — 사용자 확정 2026-11-26
 - 데이터 격리: 테스트마다 새로 렌더하고 `cleanup`으로 DOM을 비운다
@@ -183,13 +183,13 @@
 - 상태: 완료
 - 목적: 삭제 대상 부재, 남는 공용 모듈 규칙, title을 원문·단위 테스트로 고정한다
 - 선행: T-4
-- 연결 항목: DoD-31, DoD-42, DoD-43
-- 수정 대상: `__tests__/repo/removed-modules.test.ts` — 신규 / `__tests__/repo/shared-modules.test.ts` — 남는 모듈 기준으로 수정(fields 5종, 소비자 검사를 `components/pyramid/`로, `cn` 검사 대상 갱신) / `__tests__/app/page-metadata.test.ts` — 신규
+- 연결 항목: DoD-31, DoD-42, DoD-43, DoD-49, DoD-51, DoD-53, DoD-56
+- 수정 대상: `__tests__/repo/removed-modules.test.ts` — 신규 / `__tests__/repo/shared-modules.test.ts` — 남는 모듈 기준으로 수정(fields 5종, 소비자 검사를 `components/pyramid/`로, `cn` 검사 대상 갱신) / `__tests__/app/page-metadata.test.ts` — 신규 / `__tests__/repo/ui-polish.test.ts` — 신규(DoD-49·51·53·56 원문 검사)
 - 따라야 할 패턴: `@vitest-environment node` 원문 검사 — 근거: `__tests__/repo/shared-modules.test.ts`, `__tests__/repo/ports.test.ts`
 - 완료 조건: 연결 항목 충족. 추가로 (1) 삭제 목록은 T-4 수정 대상과 일치한다 (2) `app/layout.tsx`를 import하지 않는다 — 검증: 테스트
 - 실행 명령: `bun run test __tests__/repo __tests__/app`, `bunx oxfmt --check __tests__/repo __tests__/app`, `bunx oxlint __tests__/repo __tests__/app`
 - 수정 금지: 소스 파일, 다른 테스트 파일
-- 구현 기록: seongho:test-dev(T-11 골격 인스턴스, 살 모드) — __tests__/repo/removed-modules.test.ts, __tests__/repo/shared-modules.test.ts, __tests__/app/page-metadata.test.ts. 수정 0/3. 실행 통과
+- 구현 기록: seongho:test-dev(T-11 골격 인스턴스, 살 모드) — __tests__/repo/removed-modules.test.ts, __tests__/repo/shared-modules.test.ts, __tests__/app/page-metadata.test.ts. 수정 0/3. 실행 통과 | 다듬기 재개(2026-11-27): 대기 | 다듬기 본문: ui-polish.test.ts 5 case. 오케스트레이터 확인: bun run test 22 files·267 passed
 - 테스트 파일·runner: `__tests__/repo/removed-modules.test.ts`, `__tests__/repo/shared-modules.test.ts`, `__tests__/app/page-metadata.test.ts` — Vitest(node 환경 지시문)
 - mock 허용 경계: 없음(실제 파일 시스템 읽기) — 테스트 설계 단계에서 사용자 확정
 - 데이터 격리: 읽기만 하고 파일을 쓰지 않는다
@@ -200,13 +200,13 @@
 - 상태: 완료
 - 목적: 프로덕션 빌드에서 차트 렌더·반응형·다크 고정·폰트·기본 흐름을 고정한다
 - 선행: T-4
-- 연결 항목: DoD-21, DoD-37, DoD-38, DoD-39, DoD-40, DoD-41
+- 연결 항목: DoD-21, DoD-37, DoD-38, DoD-39, DoD-40, DoD-41, DoD-47, DoD-48, DoD-50, DoD-54, DoD-55
 - 수정 대상: `e2e/pyramid-terminal.spec.ts` — 신규
 - 따라야 할 패턴: region 범위 locator, 너비마다 `browser.newContext({ viewport })`와 `try/finally` — 근거: 삭제 전 `e2e/average-entry-calculator.spec.ts`, `e2e/pnl-calculator.spec.ts`(레이아웃·다크 판정)
 - 완료 조건: 연결 항목 충족. 추가로 (1) 1280·768·375px에서 region 배치를 boundingBox로 판정한다 (2) DoD-39는 `colorScheme: "light"` 컨텍스트에서 판정한다 (3) DoD-40은 `document.fonts` 로드 상태와 계산된 font-family로 판정한다 (4) URL·포트를 하드코딩하지 않는다 (5) `e2e/home.spec.ts`와 함께 통과한다 — 검증: E2E
 - 실행 명령: `E2E_PORT=3261 bun run test:e2e e2e/pyramid-terminal.spec.ts`, `bunx oxfmt --check e2e`, `bunx oxlint e2e/pyramid-terminal.spec.ts`
 - 수정 금지: e2e/home.spec.ts, playwright.config.ts, app/, components/, lib/
-- 구현 기록: seongho:e2e-dev(T-12 골격 인스턴스, 살 모드) — e2e/pyramid-terminal.spec.ts. 수정 1/3 — 원인: 본문 선택자 결함(Chromium에서 definition 접근 이름 미노출, recharts x축 눈금 클래스 불일치). 7단계 e2e-runner 1회차 11건 중 6건 실패. 재위임 중
+- 구현 기록: seongho:e2e-dev(T-12 골격 인스턴스, 살 모드) — e2e/pyramid-terminal.spec.ts. 수정 1/3 — 원인: 본문 선택자 결함(Chromium에서 definition 접근 이름 미노출, recharts x축 눈금 클래스 불일치). 7단계 e2e-runner 1회차 11건 중 6건 실패. 재위임 중 | 다듬기 재개(2026-11-27): DoD-37 1열 순서·DoD-47·48·50·54·55 시나리오 추가 — 골격 update 대상 | 다듬기 본문: fixme 7개 채움, DoD-21 툴팁 hover 전 scrollIntoView 추가. 실행은 7단계 e2e-runner
 - 테스트 파일·runner: `e2e/pyramid-terminal.spec.ts` — Playwright(chromium)
 - mock 허용 경계: 없음(프로덕션 빌드를 실제 브라우저로) — 테스트 설계 단계에서 사용자 확정
 - 데이터 격리: 테스트마다 새 페이지 또는 새 브라우저 컨텍스트를 쓰고 저장 상태가 없다
@@ -273,6 +273,16 @@
 - DoD-43: T-11
 - DoD-44: T-5
 - DoD-46: T-13
+- DoD-47: T-3, T-12
+- DoD-48: T-2, T-3, T-12
+- DoD-49: T-2, T-11
+- DoD-50: T-3, T-12
+- DoD-51: T-3, T-11
+- DoD-52: T-3
+- DoD-53: T-2, T-11
+- DoD-54: T-2, T-3, T-12
+- DoD-55: T-3, T-12
+- DoD-56: T-2, T-3, T-11
 - EC-1: T-3, T-8
 - EC-2: T-3, T-8
 - EC-3: T-3, T-8
@@ -316,6 +326,7 @@
 - 2 (순차): T-3 → T-4.
 - 3 (병렬): T-5, T-7, T-8, T-9, T-10, T-11, T-12 본문(T-4 뒤) — 수정 파일이 겹치지 않는다. build·test:e2e는 한 번에 하나만 돌린다.
 - 4: T-13.
+- 다듬기 재개(2026-11-27, 스펙 DoD-20·37 변경, DoD-47~56 추가): 0) T-8·T-11·T-12 골격 update·재동결 → 1) T-2·T-3 병렬(수정 파일 분리) → 2) T-8·T-9·T-11·T-12 본문 → 3) T-13·7단계 재검증
 
 ## 5. 차단 사항
 
@@ -325,9 +336,9 @@
 
 - 상태: PASS(동결) — 사람 승인 2026-11-26
 - 기준 스펙: docs/specs/pyramid-terminal.md (상태 확정, EC-14·EC-35·DoD-25 테스트 설계 중 사용자 결정으로 갱신)
-- 골자 digest: `fe1074ca7185dc31`
-- 확인 명령: `python3 /root/study/skills/dev-pipeline/skills/test-design/scripts/check-skeleton.py --spec docs/specs/pyramid-terminal.md --files __tests__/lib/pyramid.test.ts __tests__/components/pyramid-display.test.ts __tests__/components/pyramid-terminal.test.tsx __tests__/components/pyramid-steps.test.tsx __tests__/components/pyramid-exits.test.tsx __tests__/repo/removed-modules.test.ts __tests__/repo/shared-modules.test.ts __tests__/app/page-metadata.test.ts e2e/pyramid-terminal.spec.ts --exempt EC-14,DoD-44,DoD-46 --frozen fe1074ca7185dc31`
-- 골격 파일: 항목 80개 중 case 연결 77개, 제외 3개, case 123개
+- 골자 digest: `ea9aae230903357c` (다듬기 update 재동결 2026-11-27. 이전 `fe1074ca7185dc31`은 무효)
+- 확인 명령: `python3 /root/study/skills/dev-pipeline/skills/test-design/scripts/check-skeleton.py --spec docs/specs/pyramid-terminal.md --files __tests__/lib/pyramid.test.ts __tests__/components/pyramid-display.test.ts __tests__/components/pyramid-terminal.test.tsx __tests__/components/pyramid-steps.test.tsx __tests__/components/pyramid-exits.test.tsx __tests__/repo/removed-modules.test.ts __tests__/repo/shared-modules.test.ts __tests__/repo/ui-polish.test.ts __tests__/app/page-metadata.test.ts e2e/pyramid-terminal.spec.ts --exempt EC-14,DoD-44,DoD-46,DoD-52 --frozen ea9aae230903357c`
+- 골격 파일: 항목 80개 중 case 연결 77개, 제외 3개, case 123개 (다듬기 update 후 항목 90개 중 연결 86개, 제외 4개, case 134개 — 아래 다듬기 update 참고)
   - `__tests__/lib/pyramid.test.ts` 21 — T-6, seongho:test-dev
   - `__tests__/components/pyramid-display.test.ts` 7 — T-7, seongho:test-dev(T-6과 같은 인스턴스)
   - `__tests__/components/pyramid-terminal.test.tsx` 37 — T-8, seongho:test-dev
@@ -356,6 +367,14 @@
   - DoD-21 "Recharts 사용", DoD-40 "npm `pretendard` + `next/font/local` 출처"는 E2E로 판정할 수 없다 — 7단계 코드 대조로 보완
   - E2E는 Chromium만, 다른 브라우저·실기기 폰트 렌더는 확인하지 않는다
 
+### 다듬기 update (2026-11-27)
+
+- 스펙 변경: DoD-20 열 순서, DoD-37 1열·DOM 순서, DoD-51 레버리지 단위 결정, 신규 DoD-47~56
+- 골격 변경: `__tests__/components/pyramid-terminal.test.tsx` DoD-9·DoD-20 구조 case(it.todo 복귀), `__tests__/repo/ui-polish.test.ts` 신규 5 case(T-11), `e2e/pyramid-terminal.spec.ts` DoD-37 375px case(test.fixme 복귀)와 DoD-47(2)·48·50·54·55 신규 6 case(T-12). 항목 90개 중 연결 86, 제외 4, case 134
+- reviewer(매 회 새 general-purpose, 파일 무변경 확인): 1회 `35f93fcfbffdd723` NEEDS-FIX 7건(마지막 열 이름, 아이콘 판정 약화, 스크롤 중간 상태, mask-image 고정, slide 미검사, T-9 본문 담당 공백, warning 토큰 연결) / 2회 `461e30251611800d` NEEDS-FIX 6건(word-break 공허 통과, 아이콘 자리 lucide 존재, 우회 표기, transition all 변형, 페이드 보임 정의, 색 검사 범위) / 3회 `ff440b821fd656bb` NEEDS-FIX 3건(animate-in 유지, 닫기 ✕ 글리프, 숏 선택 색) — 자동 3회 상한(REVIEW-BLOCKED), 사용자 결정으로 반영 후 재검토 없이 동결
+- 사람 확정: 제외에 DoD-52(동심 반경, 스펙상 확인 절차 — 7단계 코드 대조) 추가. DoD-54 중 `antialiased`·`text-balance`·`text-pretty`는 확인 절차(7단계 코드 대조), E2E는 word-break·줄바꿈 지점. mock 경계 변경 없음
+- 본문 단계 주의: T-8 본문 열 인덱스 갱신(pyramid-terminal.test.tsx:338, :622-624, :669, :1069, :1091-1092), T-9 본문 열 인덱스 갱신(pyramid-steps.test.tsx:329, :599-601), T-12 1280·768px DoD-37 본문의 옛 배치 가정 확인, DoD-50 측정 전 스크롤, DoD-47 scrollLeft 변경 후 대기
+
 ### 검증 기록
 
 - 코드 기준: 5e4964b + 작업 트리(미커밋). 검증 중 파일 변경 없음(스냅샷 대조)
@@ -369,3 +388,13 @@
 - 미검증: Chromium 외 브라우저, 실기기 폰트 렌더, 컴포넌트 테스트의 차트 실제 렌더(E2E만 증명)
 - 8단계 사용자 결정(2026-11-27): 시안 부가 문구는 푸터 "교육용 시뮬레이터" 줄만 제거하고 나머지 수용, 미사용 `components/ui/slider.tsx` 유지, EC-20 한 글자 입력 중간값 동작 수용(스펙 EC-20에 명시)
 - 재검증(푸터 수정 후): 변경분 스펙 재대조(새 general-purpose + seongho:verify) 새 finding 없음·DoD-36 유지·digest 동결 / test-runner 정합성 명령 전부 exit 0, test 262 passed, build ○ / / e2e-runner 전체 12/12 통과
+
+#### 다듬기 검증 (2026-11-28)
+
+- 코드 기준: 85a05ec + 작업 트리(미커밋). 각 회차 검증 중 파일 변경 없음(스냅샷 대조)
+- 1회차: verify 90개 중 충족 88, 부분 충족 1(DoD-54 — Portal 다이얼로그에 break-keep·text-balance·text-pretty 미적용), 검증 불가 1(DoD-46 실행 항목) / test-runner 정합성 명령 전부 exit 0, test 22 files·267 passed / e2e-runner 18건 중 17 통과, DoD-50 실패(단계 삭제 버튼 가장자리 3지점이 카드 머리 줄에 가려짐 — 오케스트레이터가 실제 빌드에서 elementFromPoint로 재현해 제품 결함으로 분류). Low: CLAUDE.md INNER_CARD_RADIUS 누락
+- 수정: T-3(수정 2/3) 테두리 있는 터치 대상 `after:-inset-px`, 다이얼로그 줄바꿈 클래스 / T-5 CLAUDE.md 한 줄
+- 2회차: 변경분 verify 새 finding 없음(DoD-44·50·54 충족, 회귀 없음, Portal 요소 중 한국어 텍스트가 남은 곳 없음) / test-runner 전부 exit 0, 267 passed, build ○ / / e2e-runner pyramid-terminal 17/17, 전체 18/18 통과. 골자 digest `ea9aae230903357c` 동결 유지
+- 항목별 종합: DoD-1~DoD-56(DoD-45 삭제), EC-1~EC-35 전부 충족. 테스트 제외·확인 절차 항목(EC-14, DoD-44, DoD-52, DoD-54 일부, DoD-55 컨테이너 기준, DoD-21 Recharts·DoD-40 출처)은 코드 대조로 충족
+- 관찰(결함 아님): 수수료율 ≥1% 경고가 접힌 `수수료 설정` 안에 있어 접으면 결과 `—`의 이유가 보이지 않는다(EC-4가 접힘 상태를 정하지 않음). 스코프 초과 경미 2건(side-toggle 터치 영역 클래스, 전역 toggle 선택 색 — 현재 사용처는 SideToggle뿐)
+- 미검증: Chromium 외 브라우저, 실기기 폰트 렌더, 200% 확대

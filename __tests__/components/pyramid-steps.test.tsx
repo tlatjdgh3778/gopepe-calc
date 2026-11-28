@@ -125,7 +125,7 @@ function rowHeaderText(row: HTMLTableRowElement): string | null {
   return within(row).getByRole("rowheader").textContent;
 }
 
-/** 행의 칸 텍스트(진입 단계 | 진입가 | 재투입 | 시점 수익 | 투입 증거금 | 추가 수량 | 누적 평단 | 청산가). */
+/** 행의 칸 텍스트(DoD-20 열 순서: 진입 단계 | 진입가 | 누적 평단 | 청산가 | 재투입 | 시점 수익 | 투입 증거금 | 추가 수량). */
 function rowCells(row: HTMLTableRowElement): (string | null)[] {
   return Array.from(row.cells).map((cell) => cell.textContent);
 }
@@ -326,7 +326,7 @@ describe("피라미딩 단계 편집 — 추가 진입 단계를 추가·삭제�
       expect(summary("추정 청산가")).toBe("1,714.78");
       const rows = pathBodyRows();
       expect(rows.map(rowHeaderText)).toEqual(["최초 진입", "1차 추가 진입"]);
-      expect(rowCells(rows[1])[7]).toBe("1,714.78");
+      expect(rowCells(rows[1])[3]).toBe("1,714.78");
       expect(document.activeElement).toBe(priceField(1));
       expectNoBrokenScreen();
     });
@@ -598,7 +598,8 @@ describe("피라미딩 단계 편집 — 추가 진입 단계를 추가·삭제�
           expectExcludedRow(row, 2);
           expect({ sample: [price, reinvest], cells: rowCells(row).slice(1) }).toEqual({
             sample: [price, reinvest],
-            cells: [priceCell, reinvestCell, DASH, DASH, DASH, DASH, DASH],
+            // 진입가 | 누적 평단 | 청산가 | 재투입 | 시점 수익 | 투입 증거금 | 추가 수량
+            cells: [priceCell, DASH, DASH, reinvestCell, DASH, DASH, DASH],
           });
           expectNoBrokenScreen();
           unmount();

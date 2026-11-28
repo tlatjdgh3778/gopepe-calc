@@ -11,7 +11,7 @@ const Pretendard = localFont({
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={`${Pretendard.variable} dark font-sans`}>
-      <body className="tabular-nums">{children}</body>
+      <body className="antialiased tabular-nums">{children}</body>
     </html>
   );
 }

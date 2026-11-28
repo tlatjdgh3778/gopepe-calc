@@ -40,7 +40,7 @@
   - `summary-panel.tsx`: `SummaryPanel`
   - `path-panel.tsx`: `PathPanel`(차트는 `path-chart.tsx`의 `PathChart`)
   - `take-profit-panel.tsx`: `TakeProfitPanel`, `stop-loss-panel.tsx`: `StopLossPanel`
-  - `panel.tsx`: `Panel`(이름이 제목 `h2`인 `section`), `PanelTag`, `WithUnit`
+  - `panel.tsx`: `Panel`(이름이 제목 `h2`인 `section`), `PanelTag`, `WithUnit`, `INNER_CARD_RADIUS`(패널 안쪽 카드 반경. 패널 반경은 이 값 + 패널 패딩 1rem)
   - `display.ts`: 터미널 표시 문자열·차트 데이터(`EMPTY`, `formatLeverage`, `formatRiskReward`, `pathChartPoints` 등)
 - region 이름(`Panel`의 `title`): `포지션 설정`·`추가 진입`·`포지션 요약`·`포지션 경로`·`익절`·`손절`.
 - 공용 모듈:

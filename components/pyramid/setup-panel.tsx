@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 import { DecimalField } from "@/components/fields/decimal-field";
 import { SideToggle, type Side } from "@/components/fields/side-toggle";
@@ -87,12 +88,14 @@ export function SetupPanel({
           aria-expanded={feeOpen}
           aria-controls={feePanelId}
           onClick={() => onFeeOpenChange(!feeOpen)}
-          className="flex items-center justify-between rounded-md text-left text-sm font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="relative flex min-h-11 items-center justify-between rounded-md text-left text-sm font-medium outline-none after:absolute after:inset-0 focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           수수료 설정
-          <span aria-hidden="true" className="text-muted-foreground">
-            {feeOpen ? "⌃" : "⌄"}
-          </span>
+          {feeOpen ? (
+            <ChevronUp aria-hidden="true" className="size-4 text-muted-foreground" />
+          ) : (
+            <ChevronDown aria-hidden="true" className="size-4 text-muted-foreground" />
+          )}
         </button>
         <fieldset
           id={feePanelId}

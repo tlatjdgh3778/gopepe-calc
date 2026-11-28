@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Plus, X } from "lucide-react";
 
 import { DecimalField } from "@/components/fields/decimal-field";
 import { FieldWarning } from "@/components/fields/field-warning";
@@ -12,9 +13,10 @@ import {
   stepReinvestLabel,
   stepRemoveLabel,
 } from "@/components/pyramid/display";
-import { Panel, PanelTag } from "@/components/pyramid/panel";
+import { INNER_CARD_RADIUS, Panel, PanelTag } from "@/components/pyramid/panel";
 import { Button } from "@/components/ui/button";
 import type { PyramidExclusion } from "@/lib/pyramid";
+import { cn } from "@/lib/utils";
 
 /** 추가 진입 단계 입력 원문. `id`는 화면 순서와 무관한 고유 키다. */
 export type StepDraft = { id: number; price: string; reinvest: string };
@@ -49,7 +51,7 @@ export function StepEditor({
 
   return (
     <Panel title="추가 진입" aside={<PanelTag>선택</PanelTag>}>
-      <p className="-mt-2 text-xs text-muted-foreground">
+      <p className="-mt-2 text-xs text-pretty text-muted-foreground">
         해당 시점의 가용 수익을 증거금으로 사용합니다.
       </p>
 
@@ -63,7 +65,10 @@ export function StepEditor({
           <fieldset
             key={step.id}
             aria-labelledby={headingId}
-            className="m-0 flex min-w-0 flex-col gap-3 rounded-md border border-input bg-muted p-3"
+            className={cn(
+              INNER_CARD_RADIUS,
+              "m-0 flex min-w-0 flex-col gap-3 border border-input bg-muted p-3",
+            )}
           >
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 text-sm font-medium">
@@ -76,26 +81,30 @@ export function StepEditor({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
+                className="relative after:absolute after:-inset-px max-[720px]:size-11"
                 aria-label={stepRemoveLabel(n)}
                 onClick={() => onRemove(index)}
               >
-                <span aria-hidden="true">×</span>
+                <X aria-hidden="true" />
               </Button>
             </div>
-            <div className="grid min-w-0 grid-cols-2 gap-3">
-              <div className="min-w-0" ref={priceWrapperRef(step.id)}>
-                <DecimalField
-                  label={stepPriceLabel(n)}
-                  value={step.price}
-                  onChange={(value) => onStepChange(step.id, "price", value)}
-                />
-              </div>
-              <div className="min-w-0">
-                <DecimalField
-                  label={stepReinvestLabel(n)}
-                  value={step.reinvest}
-                  onChange={(value) => onStepChange(step.id, "reinvest", value)}
-                />
+            {/* 카드 폭이 좁으면(16rem 미만) 가격·재투입을 1열로 접는다(DoD-55). */}
+            <div className="@container min-w-0">
+              <div className="grid min-w-0 grid-cols-1 gap-3 @min-[16rem]:grid-cols-2">
+                <div className="min-w-0" ref={priceWrapperRef(step.id)}>
+                  <DecimalField
+                    label={stepPriceLabel(n)}
+                    value={step.price}
+                    onChange={(value) => onStepChange(step.id, "price", value)}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <DecimalField
+                    label={stepReinvestLabel(n)}
+                    value={step.reinvest}
+                    onChange={(value) => onStepChange(step.id, "reinvest", value)}
+                  />
+                </div>
               </div>
             </div>
             {warning ? <FieldWarning id={warningId}>{warning}</FieldWarning> : null}
@@ -112,13 +121,17 @@ export function StepEditor({
           onClick={onAdd}
           className="w-full border-dashed"
         >
-          <span aria-hidden="true">＋</span>
+          <Plus aria-hidden="true" />
           추가 진입 단계
         </Button>
         {full ? (
-          <p className="text-xs text-muted-foreground">최대 8단계까지 추가할 수 있습니다.</p>
+          <p className="text-xs text-pretty text-muted-foreground">
+            최대 8단계까지 추가할 수 있습니다.
+          </p>
         ) : null}
-        <p className="text-xs text-muted-foreground">추가 진입에도 최초 레버리지가 적용됩니다.</p>
+        <p className="text-xs text-pretty text-muted-foreground">
+          추가 진입에도 최초 레버리지가 적용됩니다.
+        </p>
       </div>
     </Panel>
   );

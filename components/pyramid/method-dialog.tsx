@@ -1,5 +1,7 @@
 "use client";
 
+import { Info, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,19 +23,27 @@ const METHOD_PARAGRAPHS = [
 export function MethodDialog() {
   return (
     <Dialog>
-      <DialogTrigger render={<Button variant="ghost" size="sm" className="text-primary" />}>
+      <DialogTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="sm"
+            className="relative text-primary after:absolute after:-inset-px max-[720px]:h-11"
+          />
+        }
+      >
         계산 기준
-        <span aria-hidden="true">ⓘ</span>
+        <Info aria-hidden="true" />
       </DialogTrigger>
-      <DialogContent showCloseButton={false} className="sm:max-w-lg">
+      <DialogContent showCloseButton={false} className="break-keep sm:max-w-lg">
         <div className="flex items-center justify-between gap-2">
-          <DialogTitle>계산 기준</DialogTitle>
+          <DialogTitle className="text-balance">계산 기준</DialogTitle>
           <DialogClose render={<Button variant="ghost" size="icon-sm" aria-label="닫기" />}>
-            <span aria-hidden="true">✕</span>
+            <X aria-hidden="true" />
           </DialogClose>
         </div>
         {METHOD_PARAGRAPHS.map((text) => (
-          <p key={text} className="leading-relaxed text-muted-foreground">
+          <p key={text} className="leading-relaxed text-pretty text-muted-foreground">
             {text}
           </p>
         ))}

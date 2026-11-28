@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { RotateCcw } from "lucide-react";
 
 import type { Side } from "@/components/fields/side-toggle";
 import { formatFillPrice, formatRoeFill } from "@/components/pyramid/display";
@@ -68,6 +69,14 @@ function zeroWarningOf(text: string): string | null {
   const n = toNumber(text);
   return n !== null && n <= 0 ? ZERO_WARNING : null;
 }
+
+/** 위치 grid(DoD-37). 1열은 DOM 순서, 721px 이상은 grid 영역 배치다. */
+const GRID =
+  "grid grid-cols-[minmax(0,1fr)] items-start gap-3 " +
+  "min-[721px]:grid-cols-[minmax(235px,0.8fr)_minmax(0,1.7fr)] " +
+  "min-[721px]:[grid-template-areas:'setup_summary'_'steps_path'_'exits_exits'] " +
+  "min-[1151px]:grid-cols-[minmax(235px,0.85fr)_minmax(0,2fr)_minmax(245px,1fr)] " +
+  "min-[1151px]:[grid-template-areas:'setup_summary_exits'_'steps_path_exits']";
 
 function clamp(v: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, v));
@@ -261,24 +270,29 @@ export function PyramidTerminal() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-[1600px] min-w-0 flex-col gap-3 px-4 py-6 md:px-6">
+    <main className="mx-auto flex w-full max-w-[1600px] min-w-0 flex-col gap-3 px-4 py-6 break-keep md:px-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="flex min-w-0 flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">피라미딩 계산기</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-2xl font-semibold tracking-tight text-balance">피라미딩 계산기</h1>
+          <p className="text-sm text-pretty text-muted-foreground">
             주문 조건을 수정하면서 포지션과 종료 결과를 즉시 확인하세요.
           </p>
         </div>
         <Button type="button" variant="outline" onClick={reset}>
-          <span aria-hidden="true">↻</span>
+          <RotateCcw aria-hidden="true" />
           초기화
         </Button>
       </header>
 
       <MarketStrip symbolInfo={symbolInfo} onSymbolChange={changeSymbol} />
 
-      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-3 min-[721px]:grid-cols-[minmax(235px,0.8fr)_minmax(0,1.7fr)] min-[1151px]:grid-cols-[minmax(235px,0.85fr)_minmax(0,2fr)_minmax(245px,1fr)]">
-        <div className="grid min-w-0 gap-3">
+      {/*
+        DOM 순서는 설정 → 요약 → 추가 진입 → 경로 → 익절·손절(DoD-37, 1열은 이 순서 그대로).
+        721px 이상은 grid 영역으로 배치한다: 2열 "설정 요약 / 추가 진입 경로 / 익절·손절(전체 폭)",
+        1151px 이상 3열 "설정 요약 익절·손절 / 추가 진입 경로 익절·손절".
+      */}
+      <div className={GRID}>
+        <div className="min-w-0 min-[721px]:[grid-area:setup]">
           <SetupPanel
             side={side}
             onSideChange={(next) => edit({ side: next })}
@@ -299,18 +313,8 @@ export function PyramidTerminal() {
             onFeeRateChange={(value) => edit({ feeRate: value })}
             feeRateWarning={feePercent !== null && feePercent >= 1 ? FEE_WARNING : null}
           />
-          <StepEditor
-            steps={inputs.steps}
-            exclusions={calc === null ? null : calc.result.rows.slice(1).map((row) => row.excluded)}
-            onStepChange={changeStep}
-            onRemove={removeStep}
-            onAdd={addStep}
-            priceWrapperRef={priceWrapperRef}
-            addButtonRef={addButton}
-          />
         </div>
-
-        <div className="grid min-w-0 gap-3">
+        <div className="min-w-0 min-[721px]:[grid-area:summary]">
           <SummaryPanel
             result={calc?.result ?? null}
             side={side}
@@ -322,6 +326,19 @@ export function PyramidTerminal() {
             noLiquidation={noLiquidation}
             instantLiquidation={instantLiquidation}
           />
+        </div>
+        <div className="min-w-0 min-[721px]:[grid-area:steps]">
+          <StepEditor
+            steps={inputs.steps}
+            exclusions={calc === null ? null : calc.result.rows.slice(1).map((row) => row.excluded)}
+            onStepChange={changeStep}
+            onRemove={removeStep}
+            onAdd={addStep}
+            priceWrapperRef={priceWrapperRef}
+            addButtonRef={addButton}
+          />
+        </div>
+        <div className="min-w-0 min-[721px]:[grid-area:path]">
           <PathPanel
             rows={calc?.result.rows ?? null}
             stepIds={inputs.steps.map((step) => step.id)}
@@ -329,8 +346,7 @@ export function PyramidTerminal() {
             symbolInfo={symbolInfo}
           />
         </div>
-
-        <div className="grid min-w-0 gap-3 min-[721px]:col-span-full min-[721px]:grid-cols-2 min-[1151px]:col-span-1 min-[1151px]:grid-cols-1">
+        <div className="grid min-w-0 gap-3 min-[721px]:grid-cols-2 min-[721px]:[grid-area:exits] min-[1151px]:grid-cols-1">
           <TakeProfitPanel
             takeProfit={inputs.takeProfit}
             onTakeProfitChange={(value) => edit({ takeProfit: value })}

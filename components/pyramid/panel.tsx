@@ -5,6 +5,11 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
+ * 패널 안쪽 카드(지표 카드·위험 상자·단계 카드)의 반경. 패널 반경은 이 값 + 패널 패딩(1rem)이다(DoD-52, 동심 반경).
+ */
+export const INNER_CARD_RADIUS = "rounded-md";
+
+/**
  * 터미널 패널. `section`의 이름은 제목 `h2`다(region 이름, DoD-32).
  * `aside`는 제목 오른쪽 보조 표시다.
  */
@@ -25,12 +30,12 @@ export function Panel({
     <section
       aria-labelledby={id}
       className={cn(
-        "flex min-w-0 flex-col gap-4 rounded-md border bg-card p-4 text-card-foreground",
+        "flex min-w-0 flex-col gap-4 rounded-[calc(var(--radius-md)+1rem)] border bg-card p-4 text-card-foreground",
         className,
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <h2 id={id} className="text-[15px] font-semibold">
+        <h2 id={id} className="text-[15px] font-semibold text-balance">
           {title}
         </h2>
         {aside}
