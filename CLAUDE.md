@@ -29,20 +29,29 @@
 - Playwright `webServer`가 `bun run build && bun run start`로 `E2E_PORT`에 앱을 띄운다.
 - E2E는 이미 떠 있는 서버를 재사용하지 않는다(`reuseExistingServer: false`). `E2E_PORT`의 포트가 사용 중이면 실패한다.
 
-## 새 계산기 추가
+## 화면 구조(F-6 피라미딩 터미널)
 
-- 새 lib·컴포넌트·테스트 파일을 만들고, `app/page.tsx`는 자기 F-ID 자리 두 곳(import 1곳, `CalculatorTabs` 탭 항목 1곳)만 바꾼다.
-- 등록 전 자리 줄은 `// F-N 자리`다. 등록할 때 그 줄을 줄 끝에 F-ID 꼬리표 `// F-N`을 남긴 등록 줄(import 줄, 탭 항목 줄)로 바꾼다.
-- 인접한 자리 줄 사이의 `// ---` 구분 줄은 그대로 둔다.
-- 탭·탭 패널 이름은 계산기 이름이다. 순서: 손익 → 목표가 → 청산가 → 최대 수량 → 평균 진입가.
-- 카드 이름은 `{계산기명} 입력`·`{계산기명} 결과`다.
+- `app/page.tsx`는 `metadata`(title `피라미딩 계산기`)와 `<PyramidTerminal />` 하나만 렌더한다. 탭·계산기별 카드는 없다.
+- 진입점: `components/pyramid/pyramid-terminal.tsx`의 `PyramidTerminal`. 유일한 상태 소유자이고 입력 원문으로 렌더 때 계산한다.
+- 패널(`components/pyramid/`):
+  - `market-strip.tsx`: `MarketStrip`(`SymbolSelect`·`MethodDialog` 포함), `method-dialog.tsx`: `MethodDialog`(`계산 기준` 버튼과 다이얼로그)
+  - `setup-panel.tsx`: `SetupPanel`(레버리지는 `leverage-control.tsx`의 `LeverageControl`)
+  - `step-editor.tsx`: `StepEditor`, `StepDraft`, `MAX_STEPS`
+  - `summary-panel.tsx`: `SummaryPanel`
+  - `path-panel.tsx`: `PathPanel`(차트는 `path-chart.tsx`의 `PathChart`)
+  - `take-profit-panel.tsx`: `TakeProfitPanel`, `stop-loss-panel.tsx`: `StopLossPanel`
+  - `panel.tsx`: `Panel`(이름이 제목 `h2`인 `section`), `PanelTag`, `WithUnit`, `INNER_CARD_RADIUS`(패널 안쪽 카드 반경. 패널 반경은 이 값 + 패널 패딩 1rem)
+  - `display.ts`: 터미널 표시 문자열·차트 데이터(`EMPTY`, `formatLeverage`, `formatRiskReward`, `pathChartPoints` 등)
+- region 이름(`Panel`의 `title`): `포지션 설정`·`추가 진입`·`포지션 요약`·`포지션 경로`·`익절`·`손절`.
 - 공용 모듈:
+  - `lib/pyramid.ts`: `simulatePyramid`, `netPnl`, `baselinePnl`, `priceForRoe`, `PyramidInput`·`PyramidResult`·`PyramidRow`·`PyramidExclusion`
+  - `lib/liquidation.ts`: `liquidationPrice`, `roundLiquidation`, `distancePercent`, `isStopBeforeLiquidation`, `exceedsFirstTier`, `formatDistance` 등
   - `lib/input.ts`: `toNumber`, `isPositive`, `LEVERAGE_PATTERN`, `DECIMAL_PATTERN`, `filtered(pattern, set)`
   - `lib/symbols.ts`: `SYMBOLS`, `SYMBOLS_AS_OF`, `SymbolInfo`
-  - `lib/format.ts`: `roundToStep`, `formatPrice`, `formatCoinQty` 등 표시 형식
-  - `components/fields/`: `SymbolSelect`, `SideToggle`, `LeverageField`, `DecimalField`, `SignedDecimalField`(맨 앞 `-` 하나를 허용하는 숫자 입력란, F-2), `FieldWarning`
-  - `components/calculator-layout.tsx`: 입력·결과 2단 카드 `CalculatorLayout`, `ResultRow`
-  - `components/calculator-tabs.tsx`: `CalculatorTabs`
+  - `lib/format.ts`: `roundToStep`, `formatPrice`, `formatCoinQty`, `formatUsdt`, `formatPercent` 등 표시 형식
+  - `components/fields/`: `SymbolSelect`, `SideToggle`(`Side`), `DecimalField`, `SignedDecimalField`(맨 앞 `-` 하나를 허용하는 숫자 입력란), `FieldWarning`
+  - `components/result-row.tsx`: `ResultRow`, `toneOf`, `TONE_CLASS`, `Tone`
+  - `components/ui/`: shadcn 컴포넌트. F-6에서 `button`·`slider`·`dialog`·`chart` 추가
   - `cn`은 `@/lib/utils`에서 가져온다.
 
 ## 테스트 위치·이름 규칙
